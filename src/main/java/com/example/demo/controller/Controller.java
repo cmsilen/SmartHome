@@ -7,6 +7,10 @@ import javax.annotation.processing.Generated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+
+// import com.example.demo.service.UserService;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +19,10 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 public class Controller {
+
+    @Autowired
+    private UserService userService;
+    // private UserService userService = new UserService();
 
     // Descrizione:
     //  Registra l’utente controllando che non vi sia gia' un utente con lo stesso username
@@ -28,7 +36,8 @@ public class Controller {
     @PostMapping("/signup")
     public String signup(@RequestBody User user) {
 
-        return "User signed up successfully! name: " + user.getName() + ", surname: " + user.getSurname() + ", username: " + user.getUsername();
+        String response = userService.signUpUser(user);
+        return response;
 
     }
 
@@ -43,7 +52,14 @@ public class Controller {
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest loginRequest) {
 
-        return "User logged in successfully! username: " + loginRequest.getUsername();
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
+
+        String response = userService.loginUser(
+            username,
+            password
+        );
+        return response;
 
     }
 
