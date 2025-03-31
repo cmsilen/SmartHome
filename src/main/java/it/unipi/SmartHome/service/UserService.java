@@ -19,7 +19,9 @@ import static com.mongodb.client.model.Filters.elemMatch;
 @Service
 public class UserService {
 
+    // NOTA si potrebbero usare delle utility function tipo utenteEsiste(username) oppure edificioEsiste(id)
 
+    // Parametri di connessione a MongoDB
     String usersCollectionName = "Users";
     String buildingsCollection = "Buildings";
     String dbName = "SmartHome";
@@ -31,7 +33,12 @@ public class UserService {
     // Secondo me quetsa roba e' una maialata pero' per ora teniamola cosi'
 
 
-    // Registrazione di un nuovo utente
+    // Descrizione:
+    //   Registrazione di un nuovo utente
+    // Collections:
+    //   Users: Inserisci nuovo utente
+    // Risposta:
+    //   String: messaggio di conferma
     public String signUpUser(User user) {
 
         // Accedo alla Collection
@@ -42,6 +49,7 @@ public class UserService {
         if (foundUser != null) {
             return "User already exists";
         }
+        // NOTA indice su username        
 
         // Inserisco il nuovo utente
         Document userDocument = new Document("username", user.getUsername())
@@ -54,7 +62,12 @@ public class UserService {
 
     }
 
-    // Effettua il login dell’utente controllando che username e password siano corretti
+    // Descrizione:
+    //   Effettua il login dell’utente
+    // Collections:
+    //   Users: Controlla se l'utente esiste e se la password e' corretta
+    // Risposta:
+    //   String: messaggio di conferma
     public String loginUser(String username, String password) {
 
         // Accedo alla Collection
@@ -74,7 +87,13 @@ public class UserService {
         }
     }
 
-    // Aggiunge un nuovo edificio 
+    // Descrizione:
+    //   Aggiunge un nuovo edificio
+    // Collections:
+    //   Buildings: Inserisci nuovo building
+    //   Users: Inserisci building nella lista degli edifici dell'utente
+    // Risposta:
+    //   String: messaggio di conferma
     public String addBuilding(Building building) {
         
         // Accedo alla Collection
@@ -114,6 +133,13 @@ public class UserService {
 
     }
 
+    // Descrizione:
+    //   Rimuove un edificio
+    // Collections:
+    //   Users: Rimuovi edificio dalla lista degli edifici dell'utente
+    //   Buildings: Rimuovi edificio
+    // Risposta:
+    //   String: messaggio di conferma
     public String removeBuilding(Integer id, String username) {
         
         // Accedo alla Collection
@@ -143,6 +169,68 @@ public class UserService {
         // Elimino l'edificio
         collection.deleteOne(Filters.eq("id", id));
         return "Building deleted successfully! id: " + id;
+    }
+
+    // Descrizione:
+    //  Aggiunge un utente alla lista degli utenti dell’edificio, l’username dell’admin deve essere
+    //  l'admin dell’edificio
+    // Collections:
+    //   Users: Aggiungi edificio alla lista degli edifici dell'utente
+    //   Buildings: Controlla se l'admin e' l'admin dell'edificio e aggiungi l'utente alla lista
+    // Risposta:
+    //   String: messaggio di conferma
+    public String addUserToBuilding(String username, String admin, Integer id) {
+
+        // Accedo alla Collection
+        MongoCollection<Document> collection = database.getCollection(buildingsCollection);
+        MongoCollection<Document> usersCollection = database.getCollection(usersCollectionName);
+
+        // Controllo che l'edificio esista
+        Document foundBuilding = collection.find(
+            Filters.eq("id", id)
+        ).first();
+        if (foundBuilding == null) {
+            return "Building not found";
+        }
+
+        // Controllo che gli utenti esistano
+        Document foundUser = usersCollection.find(
+            Filters.eq("username", username)
+        ).first();
+        if (foundUser == null) {
+            return "User not found";
+        }
+        // Controllo che l'admin sia effettivamente admin
+        if (admin.equals(foundBuilding.getString("admin")) == false) {
+            return "User is not admin of the building";
+        }
+
+        // Controllo che l'utente non appartenga già all'edificio
+        Bson buildingFilter = elemMatch("buildings", Filters.eq("id", id));
+        Bson userFilter = Filters.eq("username", username);
+        Document foundUserInBuilding = usersCollection.find(
+            Filters.and(buildingFilter, userFilter)
+        ).first();
+        if (foundUserInBuilding != null) {
+            return "User already in building";
+        }
+
+        // Aggiungo l'edificio alla lista dell'utente
+        String name = foundBuilding.getString("name");
+        Document newBuilding = new Document("name", name)
+            .append("id", id);
+        Bson update = push("buildings", newBuilding);
+        usersCollection.updateOne(userFilter, update);
+
+        // Aggiungo l'utente alla lista dell'edificio 
+        Bson filter = Filters.eq("id", id);
+        update = push("users", username);
+        collection.updateOne(
+            filter,
+            update
+        );
+
+        return "User added to building successfully!";
     }
 
 }

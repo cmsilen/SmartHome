@@ -140,7 +140,12 @@ public class Controller {
     @PostMapping("/building/user")
     public String addUserToBuilding(@RequestBody AddUserToBuildingRequest addUserToBuildingRequest) {
 
-        return "User added to building successfully! username: " + addUserToBuildingRequest.getUsername() + ", admin: " + addUserToBuildingRequest.getAdmin() + ", buildingId: " + addUserToBuildingRequest.getBuildingId();
+        String response = userService.addUserToBuilding(
+            addUserToBuildingRequest.getUsername(),
+            addUserToBuildingRequest.getAdmin(),
+            addUserToBuildingRequest.getBuildingId()
+        );
+        return response;
 
     }
 
