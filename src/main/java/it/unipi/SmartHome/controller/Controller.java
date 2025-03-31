@@ -184,7 +184,8 @@ public class Controller {
         @RequestParam(value = "admin", defaultValue = "") String username
     ) {
 
-        return "Sensor deleted from building successfully!";
+        String response = userService.removeSensorFromBuilding(sensorId, buildingId, username);
+        return response;
 
     }
 

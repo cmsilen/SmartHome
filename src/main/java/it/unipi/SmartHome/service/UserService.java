@@ -10,6 +10,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.logging.Filter;
 
+import javax.print.Doc;
+
 import com.mongodb.client.*;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.model.Filters;
@@ -22,7 +24,9 @@ import static com.mongodb.client.model.Filters.elemMatch;
 public class UserService {
 
     // NOTA si potrebbero usare delle utility function tipo utenteEsiste(username) oppure edificioEsiste(id)
-    // NOTA finire deleteBuilding
+    // TODO finire deleteBuilding
+    // TODO finire deleteSensor
+
 
     // Parametri di connessione a MongoDB
     String usersCollectionName = "Users";
@@ -174,7 +178,7 @@ public class UserService {
         // Cancello i sensori dell'edificio 
         filter = Filters.eq("buildingId", id);
         sensorsCollection.deleteMany(filter);
-        
+
         // Cancello le letture dei sensori dell'edificio
 
         // Elimino l'edificio
@@ -328,4 +332,45 @@ public class UserService {
         return "Sensor added";
     }
 
+    // Descrizione:
+    //  Rimuove un sensore dalla lista dei sensori dell’edificio, l’username deve essere l'admin dell’edificio
+    // Collections:
+    //  Sensors: rimuovi il sensore
+    //  Buildings: rimuovi il sensore dalla lista dei sensori dell’edificio
+    // Risposta:
+    //  String: messaggio di conferma
+    public String removeSensorFromBuilding(Integer sensorId, Integer buildingId, String username) {
+        
+        // Accedi alle collections
+        MongoCollection<Document> collection = database.getCollection(buildingsCollection);
+        MongoCollection<Document> sensorsCollection = database.getCollection(sensorsCollectionName);
+
+        // Controlla che l'edificio esista e che l'admin sia admin
+        Bson buildingFilter = Filters.eq("id", buildingId);
+        Bson adminFilter = Filters.eq("admin", username);
+        Bson filter = Filters.and(buildingFilter, adminFilter);
+        Document foundBuilding = collection.find(filter).first();
+        if (foundBuilding == null) {
+            return "Building does not exist or user is not admin";
+        }
+
+        // Controlla che il sensore esista e che sia nel building
+        Bson sensorFilter = elemMatch("sensors", Filters.eq("id", sensorId));
+        Document foundSensor = collection.find(sensorFilter).first();
+        if (foundSensor == null) {
+            return "Sensor does not exist or is not in building";
+        }
+
+        // Rimuovi il sensore dalla collection sensori
+        Bson filterSensor = Filters.eq("id", sensorId);
+        sensorsCollection.deleteOne(filterSensor);
+
+        // Rimuovi il sensore dalla lista di sensori dell'edificio
+        Bson update = pull("sensors", new Document("id", sensorId));
+        collection.updateMany(buildingFilter, update);
+
+        // Rimuovi le rilevazioni del sensore
+        return "Sensor removed";
+
+    }
 }
