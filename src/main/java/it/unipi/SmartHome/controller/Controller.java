@@ -9,7 +9,9 @@ import it.unipi.SmartHome.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 // import com.example.demo.service.UserService;
 
@@ -21,6 +23,9 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 public class Controller {
+
+    // NOTA aggiungi POST reading
+    // NOTA GET /buildings ritorna una stringa potrebbe anche ritornare un JSON
 
     @Autowired
     private UserService userService;
@@ -86,10 +91,10 @@ public class Controller {
     // Risposta:
     //  buildingsResponse: lista degli edifici dell’utente
     @GetMapping("/buildings")
-    public ResponseEntity<BuildingsResponse> getBuildings(@RequestParam(value = "username", defaultValue = "") String username) {
+    public String getBuildings(@RequestParam(value = "username", defaultValue = "") String username) {
 
-        BuildingsResponse response = new BuildingsResponse();
-        return ResponseEntity.ok(response);
+        String response = userService.getUserBuildings(username); 
+        return response;
     }
 
     // Descrizione:

@@ -233,4 +233,35 @@ public class UserService {
         return "User added to building successfully!";
     }
 
+    // Descrizione:
+    //   Ottiene la lista degli edifici dell'utente
+    // Collections:
+    //   Users: Ottiene la lista degli edifici dell'utente
+    // Risposta:
+    //   Lista degli edifici dell'utente
+    public String getUserBuildings(String username) {
+    
+
+        // Ottieni la Collection
+        MongoCollection<Document> usersCollection = database.getCollection(usersCollectionName);
+
+        // Controlla che l'utente esista
+        Bson filter = Filters.eq("username", username);
+        Document foundUser = usersCollection.find(filter).first();
+        if (foundUser == null) {
+            return "User not found";
+        }
+
+        // Leggi e concatena gli edifici
+        String response = "";
+        List<Document> buildings = foundUser.getList("buildings", Document.class);
+        for (Document building : buildings) {
+            String name = building.getString("name");
+            Integer id = building.getInteger("id");
+            response = response + " " + "name: " + name + ", id: " + id + "\n"; 
+        }
+        return response;
+
+    }
+
 }

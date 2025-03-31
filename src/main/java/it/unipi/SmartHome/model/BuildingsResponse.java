@@ -3,14 +3,13 @@ package it.unipi.SmartHome.model;
 // Java DTO (Data Transfer Object)
 public class BuildingsResponse {
 
-    private Building[] buildings;
+    private BuildingResponse[] buildings;
 
-    // Getters and Setters
-    public Building[] getBuildings() { 
-        return buildings; 
-    }
-    public void setBuildings(Building[] buildings) { 
-        this.buildings = buildings; 
+    public BuildingsResponse(Integer n, String[] names, Integer[] ids) {
+        this.buildings = new BuildingResponse[n];
+        for (int i = 0; i < n; i++) {
+            this.buildings[i] = new BuildingResponse(names[i], ids[i]);
+        }
     }
 
 }
