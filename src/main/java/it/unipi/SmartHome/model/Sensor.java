@@ -2,15 +2,15 @@ package it.unipi.SmartHome.model;
 
 public class Sensor {
 
-    private String id;
+    private Integer id;
     private String name;
     private String type;
-    private String buildingId;
+    private Integer buildingId;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
     public String getName() {
@@ -25,10 +25,10 @@ public class Sensor {
     public void setType(String type) {
         this.type = type;
     }
-    public String getBuildingId() {
+    public Integer getBuildingId() {
         return buildingId;
     }
-    public void setBuildingId(String buildingId) {
+    public void setBuildingId(Integer buildingId) {
         this.buildingId = buildingId;
     }
 }

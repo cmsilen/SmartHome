@@ -1,5 +1,6 @@
 package it.unipi.SmartHome.service;
 
+import it.unipi.SmartHome.model.AddSensorToBuildingRequest;
 import it.unipi.SmartHome.model.Building;
 import it.unipi.SmartHome.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.logging.Filter;
 
 import com.mongodb.client.*;
 import com.mongodb.ConnectionString;
@@ -20,10 +22,12 @@ import static com.mongodb.client.model.Filters.elemMatch;
 public class UserService {
 
     // NOTA si potrebbero usare delle utility function tipo utenteEsiste(username) oppure edificioEsiste(id)
+    // NOTA finire deleteBuilding
 
     // Parametri di connessione a MongoDB
     String usersCollectionName = "Users";
     String buildingsCollection = "Buildings";
+    String sensorsCollectionName = "Sensors";
     String dbName = "SmartHome";
 
     // Connessione a MongoDB
@@ -145,6 +149,7 @@ public class UserService {
         // Accedo alla Collection
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
         MongoCollection<Document> usersCollection = database.getCollection(usersCollectionName);
+        MongoCollection<Document> sensorsCollection = database.getCollection(sensorsCollectionName);
 
         // Controllo che l'edificio esista
         Document foundBuilding = collection.find(
@@ -165,6 +170,12 @@ public class UserService {
         Bson filter = elemMatch("buildings", Filters.eq("id", id));
         usersCollection.updateMany(filter, update);
         // NOTA indice su buildingId
+
+        // Cancello i sensori dell'edificio 
+        filter = Filters.eq("buildingId", id);
+        sensorsCollection.deleteMany(filter);
+        
+        // Cancello le letture dei sensori dell'edificio
 
         // Elimino l'edificio
         collection.deleteOne(Filters.eq("id", id));
@@ -262,6 +273,59 @@ public class UserService {
         }
         return response;
 
+    }
+
+    // Descrizione:
+    //  Aggiunge un sensore alla lista dei sensori dell’edificio, l’username deve essere l'admin dell’edificio
+    // Collections:
+    //  Sensors: aggiungi il sensore
+    //  Buildings: aggiungi il sensore alla lista dei sensori dell’edificio
+    // Risposta:
+    //  String: messaggio di conferma
+    public String addSensorToBuilding(AddSensorToBuildingRequest addSensorToBuildingRequest) {
+
+        // Accedi alle collections
+        MongoCollection<Document> collection = database.getCollection(buildingsCollection);
+        MongoCollection<Document> sensorsCollection = database.getCollection(sensorsCollectionName);
+
+        // Estrai informazioni
+        String username = addSensorToBuildingRequest.getUsername(); 
+        Integer sensorId = addSensorToBuildingRequest.getSensor().getId();
+        String sensorName = addSensorToBuildingRequest.getSensor().getName();
+        String sensorType = addSensorToBuildingRequest.getSensor().getType();
+        Integer buildingId = addSensorToBuildingRequest.getSensor().getBuildingId();
+        
+        // Controlla che l'id del sensore sia unico
+        Bson filter = Filters.eq("id", sensorId);
+        Document foundSensor = sensorsCollection.find(filter).first();
+        if (foundSensor != null) {
+            return "Sensor already exists";
+        }
+        
+        // Controlla che l'edificio esista e che l'admin sia admin
+        Bson buildingFilter = Filters.eq("id", buildingId);
+        Bson adminFilter = Filters.eq("admin", username);
+        filter = Filters.and(buildingFilter, adminFilter);
+        Document foundBuilding = collection.find(filter).first();
+        if (foundBuilding == null) {
+            return "Building does not exist or user is not admin";
+        }
+
+        // Aggiungi sensore alla collection sensori
+        Document sensorDocument = new Document("name", sensorName)
+            .append("type", sensorType)
+            .append("id", sensorId)
+            .append("buildingId", buildingId);
+        sensorsCollection.insertOne(sensorDocument);
+
+        // Aggiungi sensore alla lista di sensori dell'edificio
+        Document embeddedSensorDocument = new Document("name", sensorName)
+            .append("type", sensorType)
+            .append("id", sensorId);
+        Bson update = push("sensors", embeddedSensorDocument);
+        collection.updateOne(filter, update);
+
+        return "Sensor added";
     }
 
 }

@@ -164,7 +164,8 @@ public class Controller {
     @PostMapping("/building/sensor")
     public String addSensorToBuilding(@RequestBody AddSensorToBuildingRequest addSensorToBuildingRequest) {
 
-        return "Sensor added to building successfully!";
+        String response = userService.addSensorToBuilding(addSensorToBuildingRequest);
+        return response;
 
     }
 
