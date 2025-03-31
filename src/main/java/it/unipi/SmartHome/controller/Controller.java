@@ -105,7 +105,8 @@ public class Controller {
     @PostMapping("/building")
     public String addBuilding(@RequestBody Building building) {
 
-        return "Building added successfully! name: " + building.getName() + ", location: " + building.getLocation() + ", users: " + String.join(", ", building.getUsers()) + ", admin: " + building.getAdmin();
+        String response = userService.addBuilding(building);
+        return response;
 
     }
 
@@ -122,7 +123,8 @@ public class Controller {
         @RequestParam(value = "admin", defaultValue = "") String username
     ) {
 
-        return "Building deleted successfully! id: " + id;
+        String response = userService.removeBuilding(id, username);
+        return response;
 
     }
 
