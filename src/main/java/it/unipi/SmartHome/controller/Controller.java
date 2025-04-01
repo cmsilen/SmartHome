@@ -346,7 +346,7 @@ public class Controller {
         if(buildingId == null || year == null || month == null) {
             return "error";
         }
-        return userService.mostHumidDay(buildingId, year, month).toJson();
+        return userService.getMostHumidDay(buildingId, year, month).toJson();
     }
 
 }

@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -791,48 +792,52 @@ public class UserService {
             throw new RuntimeException(e);
         }
 
-        // Filtra i documenti in base al timestamp, all'ID dell'edificio e al fatto che abbiano umidità
+
         Document stage1 = new Document();
         stage1.append("timestamp", new Document("$gte", startTimestamp).append("$lt", endTimestamp));
         stage1.append("buildingID", buildingId);
-        // stage1.append("$or", new Document()
-        //     .append("consumption", new Document("$exists", true))
-        //     .append("production", new Document("$exists", true))
-        // );
+        stage1.append("$or", List.of(new Document("consumption", new Document("$exists", true)),
+                new Document("production", new Document("$exists", true)))
+        );
 
-        // Proietta il giorno e l'umidità
+
         Document stage2 = new Document();
-        stage2.append("consumption", 1);
-        stage2.append("production", 1);
-        stage2.append("date", new Document("$dateToString", new Document("format", "%d-%m-%Y").append("date", "$timestamp")));
+        stage2.append("_id", "$timestamp");
+        stage2.append("totalPowerConsumption", new Document("$sum", "$consumption"));
+        stage2.append("totalPowerProduction", new Document("$sum", "$production"));
+        stage2 = new Document("$group", stage2);
 
-        // Raggruppa per giorno e calcola l'umidità massima
+
         Document stage3 = new Document();
-        stage3.append("_id", null);
-        stage3.append("sumConsumption", new Document("$sum", "$consumption"));
-        stage3.append("sumProduction", new Document("$sum", "$production"));
-        stage3 = new Document("$group", stage3);
+        stage3.append("percent", new Document("$divide", List.of("$totalPowerProduction", "$totalPowerConsumption")));
+        stage3 = new Document("$addFields", stage3);
+
+        Document stage4 = new Document();
+        stage4.append("_id", "");
+        stage4.append("avgPercent", new Document("$avg", "$percent"));
+        stage4 = new Document("$group", stage4);
 
         AggregateIterable<Document> result = readingsCollection.aggregate(
             Arrays.asList(
                 Aggregates.match(stage1),
-                Aggregates.project(stage2),
-                stage3
+                stage2,
+                stage3,
+                stage4
             )
         );
 
         if(result.first() != null) {
             return new Document("percentage", 
-                100 * result.first().getDouble("sumProduction") / result.first().getDouble("sumConsumption")
+                100 * result.first().getDouble("avgPercent")
             );
         }
 
-        Document ret = new Document();
+        Document ret = new Document("percentage", 0);
         return ret;
 
     }
 
-    public Document mostHumidDay(Integer buildingId, Integer yearNumber, Integer monthNumber) {
+    public Document getMostHumidDay(Integer buildingId, Integer yearNumber, Integer monthNumber) {
 
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
@@ -862,26 +867,22 @@ public class UserService {
         stage1.append("buildingID", buildingId);
         stage1.append("humidity", new Document("$exists", true));
 
-        // Proietta il giorno e l'umidità
-        Document stage2 = new Document();
-        stage2.append("humidity", 1);
-        stage2.append("date", new Document("$dateToString", new Document("format", "%d-%m-%Y").append("date", "$timestamp")));
 
         // Raggruppa per giorno e calcola l'umidità massima
-        Document stage3 = new Document();
-        stage3.append("_id", "$date");
-        stage3.append("maxHumidity", new Document("$max", "$humidity"));
-        stage3 = new Document("$group", stage3);
+        Document stage2 = new Document();
+        stage2.append("_id", new Document("$dateTrunc", new Document("date", "$timestamp").append("unit", "day")));
+        stage2.append("maxHumidity", new Document("$max", "$humidity"));
+        stage2 = new Document("$group", stage2);
 
-        Document stage4 = new Document();
-        stage4.append("_id", null);
-        stage4.append("maxHumidity", new Document("$max", "$maxHumidity"));
-        stage4 = new Document("$group", stage4);
+        Document stage3 = new Document();
+        stage3.append("$sort", new Document("maxHumidity", -1));
+
+        Document stage4 = new Document("$limit", 1);
 
         AggregateIterable<Document> result = readingsCollection.aggregate(
                 Arrays.asList(
                         Aggregates.match(stage1),
-                        Aggregates.project(stage2),
+                        stage2,
                         stage3,
                         stage4
                 )
