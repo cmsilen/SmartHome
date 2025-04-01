@@ -551,9 +551,16 @@ public class UserService {
         Date startTimestamp;
         Date endTimestamp;
         String monthStart = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
-        String monthEnd = ((monthNumber + 1) % 12) < 10 ? "0" + ((monthNumber + 1) % 12) : "" + ((monthNumber + 1) % 12);
         String yearStart = "" + yearNumber;
-        String yearEnd = "" + (yearNumber + Math.floorDiv(monthNumber + 1, 12));
+        if (monthNumber == 12) {
+            monthNumber = 1;
+            yearNumber = yearNumber + 1;
+        }
+        else {
+            monthNumber = monthNumber + 1;
+        }
+        String monthEnd = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
+        String yearEnd = "" + yearNumber;
         try {
             startTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").parse(yearStart + "-" + monthStart + "-01 00:00:00.000 UTC");
             endTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").parse(yearEnd + "-" + monthEnd + "-01 00:00:00.000 UTC");
