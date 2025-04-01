@@ -263,7 +263,6 @@ public class Controller {
             return "error";
         }
         return userService.getTop5PowerConsumption(buildingId, year, month, day).toString(4);
-    
     }
 
     // Descrizione:
