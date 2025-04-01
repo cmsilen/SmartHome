@@ -190,6 +190,26 @@ public class Controller {
     }
 
     // Descrizione:
+    //  Inserisce una lettura del sensore, l’username deve essere l'admin dell’edificio
+    // Parametri:
+    //  Integer: sensorId
+    //  Integer: buildingId
+    //  String: username
+    //  String: timestamp
+    //  Float: value1
+    //  Float: value2
+    //  String: type
+    // Risposta:
+    //  String: messaggio di conferma
+    @PostMapping("/reading")
+    public String addReading(@RequestBody AddReadingRequest addReadingRequest) {
+    
+        String response = userService.addReading(addReadingRequest);
+        return response;
+
+    }
+
+    // Descrizione:
     //  Restituisce la lista dei sensori con le ultime letture degli edifici dell'utente
     // Parametri:
     //  String: username

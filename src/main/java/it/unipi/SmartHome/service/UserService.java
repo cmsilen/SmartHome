@@ -1,5 +1,6 @@
 package it.unipi.SmartHome.service;
 
+import it.unipi.SmartHome.model.AddReadingRequest;
 import it.unipi.SmartHome.model.AddSensorToBuildingRequest;
 import it.unipi.SmartHome.model.Building;
 import it.unipi.SmartHome.model.User;
@@ -32,6 +33,7 @@ public class UserService {
     String usersCollectionName = "Users";
     String buildingsCollection = "Buildings";
     String sensorsCollectionName = "Sensors";
+    String readingsCollectionName = "Readings";
     String dbName = "SmartHome";
 
     // Connessione a MongoDB
@@ -146,6 +148,8 @@ public class UserService {
     // Collections:
     //   Users: Rimuovi edificio dalla lista degli edifici dell'utente
     //   Buildings: Rimuovi edificio
+    //   Sensors: Rimuovi sensori dell'edificio
+    //   Readings: Rimuovi letture del sensore
     // Risposta:
     //   String: messaggio di conferma
     public String removeBuilding(Integer id, String username) {
@@ -154,6 +158,7 @@ public class UserService {
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
         MongoCollection<Document> usersCollection = database.getCollection(usersCollectionName);
         MongoCollection<Document> sensorsCollection = database.getCollection(sensorsCollectionName);
+        MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
         // Controllo che l'edificio esista
         Document foundBuilding = collection.find(
@@ -179,7 +184,13 @@ public class UserService {
         filter = Filters.eq("buildingId", id);
         sensorsCollection.deleteMany(filter);
 
-        // Cancello le letture dei sensori dell'edificio
+        // Rimuovi le letture del sensori
+        List<Document> sensors = foundBuilding.getList("sensors", Document.class);
+        for (Document sensor : sensors) {
+            Integer sensorId = sensor.getInteger("id");
+            Bson filterReadings = Filters.eq("sensorId", sensorId);
+            readingsCollection.deleteMany(filterReadings);
+        }
 
         // Elimino l'edificio
         collection.deleteOne(Filters.eq("id", id));
@@ -337,6 +348,7 @@ public class UserService {
     // Collections:
     //  Sensors: rimuovi il sensore
     //  Buildings: rimuovi il sensore dalla lista dei sensori dell’edificio
+    //  Readings: rimuovi le letture del sensore
     // Risposta:
     //  String: messaggio di conferma
     public String removeSensorFromBuilding(Integer sensorId, Integer buildingId, String username) {
@@ -344,6 +356,7 @@ public class UserService {
         // Accedi alle collections
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
         MongoCollection<Document> sensorsCollection = database.getCollection(sensorsCollectionName);
+        MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
         // Controlla che l'edificio esista e che l'admin sia admin
         Bson buildingFilter = Filters.eq("id", buildingId);
@@ -369,8 +382,85 @@ public class UserService {
         Bson update = pull("sensors", new Document("id", sensorId));
         collection.updateMany(buildingFilter, update);
 
+        // Rimuovi le letture del sensore
+        Bson filterReadings = Filters.eq("sensorId", sensorId);
+        readingsCollection.deleteMany(filterReadings);
+
         // Rimuovi le rilevazioni del sensore
         return "Sensor removed";
 
     }
+
+    // Descrizione:
+    //  Inserisce una lettura del sensore, l’username deve essere l'admin dell’edificio
+    // Collections:
+    //  Buildings: controlla che l'edificio esista, che l'admin sia admin e che il sensore sia nell'edificio
+    //  Readings: inserisce la lettura
+    // Risposta:
+    //  String: messaggio di conferma
+    public String addReading(AddReadingRequest request) {
+    
+        // Accedi alle collections
+        MongoCollection<Document> collection = database.getCollection(buildingsCollection);
+        MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
+
+        // Estrai informazioni
+        Integer sensorId = request.getSensorId();
+        Integer buildingId = request.getBuildingId();
+        String username = request.getUsername();
+        String timestamp = request.getTimestamp();
+        Float value1 = request.getValue1();
+        Float value2 = request.getValue2();
+        String type = request.getType();
+
+        // Controlla che l'edificio esista, che l'admin sia admin e che il sensore sia nell'edificio
+        // NOTA metti un indice per velocizzare questa cosa
+        Bson buildingFilter = Filters.eq("id", buildingId);
+        Bson adminFilter = Filters.eq("admin", username);
+        Bson sensorFilter = elemMatch("sensors", Filters.eq("id", sensorId));
+        Bson filter = Filters.and(buildingFilter, adminFilter, sensorFilter);
+        Document foundBuilding = collection.find(filter).first();
+        if (foundBuilding == null) {
+            return "Building does not exist or user is not admin or sensor is not in building";
+        }
+
+        // Aggiungi la lettura alla collection Readings, uso il tipo di sensore per decidere se aggiungere 
+        // value1 e/o value2 e come chiamare i campi che li contengon
+        Document readingDocument = new Document("sensorId", sensorId)
+            .append("buildingId", buildingId)
+            .append("timestamp", new Document("$date", new Document("$numberLong", timestamp)));
+
+        if (type.equals("PowerConsumption")) {
+            readingDocument.append("consumption", value1);
+        } 
+        else if (type.equals("SolarPanel")) {
+            readingDocument.append("production", value1);
+        } 
+        else if (type.equals("Temperature")) {
+            readingDocument.append("temperature", value1);
+        }
+        else if (type.equals("Humidity")) {
+            readingDocument.append("apparentTemperature", value1);
+            readingDocument.append("humidity", value2);
+        } 
+        else if (type.equals("Pressure")) {
+            readingDocument.append("pressure", value1);
+        } 
+        else if (type.equals("Wind")) {
+            readingDocument.append("windSpeed", value1);
+            readingDocument.append("windBearing", value2);
+        } 
+        else if (type.equals("Precipitation")) {
+            readingDocument.append("precipitationIntensity", value1);
+            readingDocument.append("precipitationProbability", value2);
+        } 
+        else {
+            return "Sensor type not supported";
+        }
+        readingsCollection.insertOne(readingDocument);
+
+        return "Reading added successfully!";
+
+    }
+
 }
