@@ -252,8 +252,8 @@ public class Controller {
     //   String: endTimestamp
     // Risposta:
     //  String: risultato della statistica
-    @GetMapping("/statistics/highestpowerconsumption")
-    public String getHighestPowerConsumption(
+    @GetMapping("/statistics/top5powerconsumption")
+    public String getTop5PowerConsumption(
         @RequestParam(value = "buildingID", defaultValue = "") Integer buildingId,
         @RequestParam(value = "year", defaultValue = "") Integer year,
         @RequestParam(value = "month", defaultValue = "") Integer month,
@@ -262,7 +262,7 @@ public class Controller {
         if(buildingId == null || year == null || month == null || day == null) {
             return "error";
         }
-        return userService.getHighestPowerConsumption(buildingId, year, month, day).toString(4);
+        return userService.getTop5PowerConsumption(buildingId, year, month, day).toString(4);
     
     }
 
@@ -285,6 +285,27 @@ public class Controller {
             return "error";
         }
         return userService.getPeakTemperature(buildingId, year, month, day).toString(4);
+    }
+
+    // Descrizione:
+    //   Peak energy usage hours in a day
+    // Parametri:
+    //   Integer: buildingId
+    //   String: startTimestamp
+    //   String: endTimestamp
+    // Risposta:
+    //  String: risultato della statistica
+    @GetMapping("/statistics/peakpowerconsumptionhours")
+    public String getPeakPowerConsumptionHours(
+            @RequestParam(value = "buildingID", defaultValue = "") Integer buildingId,
+            @RequestParam(value = "year", defaultValue = "") Integer year,
+            @RequestParam(value = "month", defaultValue = "") Integer month,
+            @RequestParam(value = "day", defaultValue = "") Integer day
+    ) {
+        if(buildingId == null || year == null || month == null || day == null) {
+            return "error";
+        }
+        return userService.getPeakPowerConsumptionHours(buildingId, year, month, day).toString(4);
     }
 
     // Descrizione:
