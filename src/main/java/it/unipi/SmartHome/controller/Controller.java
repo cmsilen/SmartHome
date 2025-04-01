@@ -286,4 +286,24 @@ public class Controller {
 
     // Descrizione:
 
+    // Descrizione:
+    //   Most humid day in a given month
+    // Parametri:
+    //   Integer: buildingId
+    //   String: startTimestamp
+    //   String: endTimestamp
+    // Risposta:
+    //  String: risultato della statistica
+    @GetMapping("/statistics/mosthumidday")
+    public String getMostHumidDay(
+            @RequestParam(value = "buildingID", defaultValue = "") Integer buildingId,
+            @RequestParam(value = "year", defaultValue = "") Integer year,
+            @RequestParam(value = "month", defaultValue = "") Integer month
+    ) {
+        if(buildingId == null || year == null || month == null) {
+            return "error";
+        }
+        return userService.mostHumidDay(buildingId, year, month).toJson();
+    }
+
 }

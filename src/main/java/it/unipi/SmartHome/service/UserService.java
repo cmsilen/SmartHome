@@ -674,4 +674,69 @@ public class UserService {
 
     }
 
+    public Document mostHumidDay(Integer buildingId, Integer yearNumber, Integer monthNumber) {
+
+        MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
+
+        Date startTimestamp;
+        Date endTimestamp;
+        String monthStart = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
+        String yearStart = "" + yearNumber;
+        if (monthNumber == 12) {
+            monthNumber = 1;
+            yearNumber = yearNumber + 1;
+        }
+        else {
+            monthNumber = monthNumber + 1;
+        }
+        String monthEnd = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
+        String yearEnd = "" + yearNumber;
+        try {
+            startTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").parse(yearStart + "-" + monthStart + "-01 00:00:00.000 UTC");
+            endTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").parse(yearEnd + "-" + monthEnd + "-01 00:00:00.000 UTC");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        // Filtra i documenti in base al timestamp, all'ID dell'edificio e al fatto che abbiano umidità
+        Document stage1 = new Document();
+        stage1.append("timestamp", new Document("$gte", startTimestamp).append("$lt", endTimestamp));
+        stage1.append("buildingID", buildingId);
+        stage1.append("humidity", new Document("$exists", true));
+
+        // Proietta il giorno e l'umidità
+        Document stage2 = new Document();
+        stage2.append("humidity", 1);
+        stage2.append("date", new Document("$dateToString", new Document("format", "%d-%m-%Y").append("date", "$timestamp")));
+
+        // Raggruppa per giorno e calcola l'umidità massima
+        Document stage3 = new Document();
+        stage3.append("_id", "$date");
+        stage3.append("maxHumidity", new Document("$max", "$humidity"));
+        stage3 = new Document("$group", stage3);
+
+        Document stage4 = new Document();
+        stage4.append("_id", null);
+        stage4.append("maxHumidity", new Document("$max", "$maxHumidity"));
+        stage4 = new Document("$group", stage4);
+
+        AggregateIterable<Document> result = readingsCollection.aggregate(
+                Arrays.asList(
+                        Aggregates.match(stage1),
+                        Aggregates.project(stage2),
+                        stage3,
+                        stage4
+                )
+        );
+
+        if(result.first() != null)
+            return result.first();
+
+        Document ret = new Document();
+        ret.append("_id", "");
+        ret.append("count", 0);
+        return ret;
+
+    }
+
 }
