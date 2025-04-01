@@ -674,6 +674,71 @@ public class UserService {
 
     }
 
+    public Document percentageOfPowerFromSolarPanels(Integer buildingId, Integer yearNumber, Integer monthNumber) {
+
+        MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
+
+        Date startTimestamp;
+        Date endTimestamp;
+        String monthStart = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
+        String yearStart = "" + yearNumber;
+        if (monthNumber == 12) {
+            monthNumber = 1;
+            yearNumber = yearNumber + 1;
+        }
+        else {
+            monthNumber = monthNumber + 1;
+        }
+        String monthEnd = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
+        String yearEnd = "" + yearNumber;
+        try {
+            startTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").parse(yearStart + "-" + monthStart + "-01 00:00:00.000 UTC");
+            endTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").parse(yearEnd + "-" + monthEnd + "-01 00:00:00.000 UTC");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        // Filtra i documenti in base al timestamp, all'ID dell'edificio e al fatto che abbiano umidità
+        Document stage1 = new Document();
+        stage1.append("timestamp", new Document("$gte", startTimestamp).append("$lt", endTimestamp));
+        stage1.append("buildingID", buildingId);
+        // stage1.append("$or", new Document()
+        //     .append("consumption", new Document("$exists", true))
+        //     .append("production", new Document("$exists", true))
+        // );
+
+        // Proietta il giorno e l'umidità
+        Document stage2 = new Document();
+        stage2.append("consumption", 1);
+        stage2.append("production", 1);
+        stage2.append("date", new Document("$dateToString", new Document("format", "%d-%m-%Y").append("date", "$timestamp")));
+
+        // Raggruppa per giorno e calcola l'umidità massima
+        Document stage3 = new Document();
+        stage3.append("_id", null);
+        stage3.append("sumConsumption", new Document("$sum", "$consumption"));
+        stage3.append("sumProduction", new Document("$sum", "$production"));
+        stage3 = new Document("$group", stage3);
+
+        AggregateIterable<Document> result = readingsCollection.aggregate(
+            Arrays.asList(
+                Aggregates.match(stage1),
+                Aggregates.project(stage2),
+                stage3
+            )
+        );
+
+        if(result.first() != null) {
+            return new Document("percentage", 
+                100 * result.first().getDouble("sumProduction") / result.first().getDouble("sumConsumption")
+            );
+        }
+
+        Document ret = new Document();
+        return ret;
+
+    }
+
     public Document mostHumidDay(Integer buildingId, Integer yearNumber, Integer monthNumber) {
 
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
