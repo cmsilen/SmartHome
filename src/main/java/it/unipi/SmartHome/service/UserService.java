@@ -5,6 +5,7 @@ import it.unipi.SmartHome.model.AddReadingRequest;
 import it.unipi.SmartHome.model.AddSensorToBuildingRequest;
 import it.unipi.SmartHome.model.Building;
 import it.unipi.SmartHome.model.User;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,7 @@ public class UserService {
     String buildingsCollection = "Buildings";
     String sensorsCollectionName = "Sensors";
     String readingsCollectionName = "Readings";
-    String dbName = "SmartHome2";
+    String dbName = "SmartHome";
 
     // Connessione a MongoDB
     ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
@@ -608,36 +609,57 @@ public class UserService {
         return ret;
     }
 
-    public String getHighestPowerConsumption(Integer buildingId, String startTimestamp, String endTimestamp) {
+    public JSONArray getHighestPowerConsumption(int buildingId, int yearNumber, int monthNumber, int dayNumber) {
+        MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
-        MongoCollection<Document> collection = database.getCollection(readingsCollectionName);
+        String dayStart = dayNumber < 10 ? "0" + dayNumber : "" + dayNumber;
+        String monthStart = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
+        String yearStart = "" + yearNumber;
+        Date startTimestamp;
+        Date endTimestamp;
 
-        // Build the aggregation pipeline
-        AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-            // Filter readings based on timestamp, buildingID, and consumption
-            match(and(
-                gte("timestamp", startTimestamp),
-                lt("timestamp", endTimestamp),
-                eq("buildingID", buildingId),
-                exists("consumption", true)
-            )),
-
-            // Group by sensorID and calculate average consumption
-            group("$sensorID", avg("avgPowerConsumption", "$consumption")),
-
-            // Sort by avgPowerConsumption in descending order
-            sort(descending("avgPowerConsumption")),
-
-            // Limit to top 5 results
-            limit(5)
-        ));
-
-        // Print the result
-        for (Document doc : result) {
-            System.out.println(doc.toJson());
+        try {
+            startTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").parse(yearStart + "-" + monthStart + "-" + dayStart + " 00:00:00.000 UTC");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(startTimestamp);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            endTimestamp = calendar.getTime();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        return "";
 
+        Document stage1 = new Document();
+        stage1.append("timestamp", new Document("$gte", startTimestamp).append("$lt", endTimestamp));
+        stage1.append("buildingID", buildingId);
+        stage1.append("consumption", new Document("$exists", true));
+        stage1 = new Document("$match", stage1);
+
+        Document stage2 = new Document();
+        stage2.append("_id", "$sensorID");
+        stage2.append("avgPowerConsumption", new Document("$avg", "$consumption"));
+        stage2 = new Document("$group", stage2);
+
+        Document stage3 = new Document("$sort", new Document("avgPowerConsumption", -1));
+
+        Document stage4 = new Document("$limit", 5);
+
+        AggregateIterable<Document> result = readingsCollection.aggregate(
+                Arrays.asList(
+                        stage1,
+                        stage2,
+                        stage3,
+                        stage4
+                )
+        );
+
+        JSONArray ret = new JSONArray();
+        if(result.first() != null){
+            for(Document d : result){
+                ret.put(d);
+            }
+        }
+
+        return ret;
     }
 
     public String getPeakTemperature(Integer buildingId, String startTimestamp, String endTimestamp) {

@@ -255,12 +255,14 @@ public class Controller {
     @GetMapping("/statistics/highestpowerconsumption")
     public String getHighestPowerConsumption(
         @RequestParam(value = "buildingID", defaultValue = "") Integer buildingId,
-        @RequestParam(value = "startTimestamp", defaultValue = "") String startTimestamp,
-        @RequestParam(value = "endTimestamp", defaultValue = "") String endTimestamp
+        @RequestParam(value = "year", defaultValue = "") Integer year,
+        @RequestParam(value = "month", defaultValue = "") Integer month,
+        @RequestParam(value = "day", defaultValue = "") Integer day
     ) {
-
-        String response = userService.getHighestPowerConsumption(buildingId, startTimestamp, endTimestamp);
-        return response;    
+        if(buildingId == null || year == null || month == null || day == null) {
+            return "error";
+        }
+        return userService.getHighestPowerConsumption(buildingId, year, month, day).toString(4);
     
     }
 
