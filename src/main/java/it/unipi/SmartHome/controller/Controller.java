@@ -225,16 +225,65 @@ public class Controller {
     }
 
     // Descrizione:
-    //  Restituisce il risultato della statistica richiesta
+    //   Number of rainy days given a month
     // Parametri:
-    //  Integer: statisticId
+    //   Integer: buildingId
+    //   String: startTimestamp
+    //   String: endTimestamp
     // Risposta:
     //  String: risultato della statistica
-    @GetMapping("/statistics")
-    public String getStatistics(@RequestParam(value = "statisticId", defaultValue = "") Integer statisticId) {
+    @GetMapping("/statistics/rainydays")
+    public String getRainyDays(
+        @RequestParam(value = "buildingID", defaultValue = "") Integer buildingId,
+        @RequestParam(value = "startTimestamp", defaultValue = "") String startTimestamp,
+        @RequestParam(value = "endTimestamp", defaultValue = "") String endTimestamp
+    ) {
 
-        return "Statistics for sensorId";    
+        String response = userService.getRainyDays(buildingId, startTimestamp, endTimestamp);
+        return response;    
     
     }
+
+    // Descrizione:
+    //   Top 5 sensors with the highest power consumption
+    // Parametri:
+    //   Integer: buildingId
+    //   String: startTimestamp
+    //   String: endTimestamp
+    // Risposta:
+    //  String: risultato della statistica
+    @GetMapping("/statistics/highestpowerconsumption")
+    public String getHighestPowerConsumption(
+        @RequestParam(value = "buildingID", defaultValue = "") Integer buildingId,
+        @RequestParam(value = "startTimestamp", defaultValue = "") String startTimestamp,
+        @RequestParam(value = "endTimestamp", defaultValue = "") String endTimestamp
+    ) {
+
+        String response = userService.getHighestPowerConsumption(buildingId, startTimestamp, endTimestamp);
+        return response;    
+    
+    }
+
+    // Descrizione:
+    //   Time of peak temperature in the last day
+    // Parametri:
+    //   Integer: buildingId
+    //   String: startTimestamp
+    //   String: endTimestamp
+    // Risposta:
+    //  String: risultato della statistica
+    @GetMapping("/statistics/peaktemperature")
+    public String getPeakTemperature(
+        @RequestParam(value = "buildingID", defaultValue = "") Integer buildingId,
+        @RequestParam(value = "startTimestamp", defaultValue = "") String startTimestamp,
+        @RequestParam(value = "endTimestamp", defaultValue = "") String endTimestamp
+    ) {
+
+        String response = userService.getPeakTemperature(buildingId, startTimestamp, endTimestamp);
+        return response;    
+    
+    }
+
+    // Descrizione:
 
 }

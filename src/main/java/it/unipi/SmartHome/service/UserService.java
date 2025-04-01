@@ -15,15 +15,22 @@ import com.mongodb.ConnectionString;
 import com.mongodb.client.model.Filters;
 import org.bson.conversions.Bson;
 import org.bson.Document;
+import java.lang.reflect.Method;
 import static com.mongodb.client.model.Updates.pull;
 import static com.mongodb.client.model.Updates.push;
-import static com.mongodb.client.model.Filters.elemMatch;
+import static com.mongodb.client.model.Aggregates.*;
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Accumulators.*;
+import static com.mongodb.client.model.Sorts.*;
+
 @Service
 public class UserService {
 
     // NOTA si potrebbero usare delle utility function tipo utenteEsiste(username) oppure edificioEsiste(id)
-    // TODO finire deleteBuilding
-    // TODO finire deleteSensor
+    // TODO aggiungere KV in GET /sensors
+    // TODO aggiornare KV in POST /reading 
+    // TODO aggiornare POST /reading il timestamp e' sbagliato
+    // TODO aggiungere password ad utente
 
 
     // Parametri di connessione a MongoDB
@@ -31,7 +38,7 @@ public class UserService {
     String buildingsCollection = "Buildings";
     String sensorsCollectionName = "Sensors";
     String readingsCollectionName = "Readings";
-    String dbName = "SmartHome";
+    String dbName = "SmartHome2";
 
     // Connessione a MongoDB
     ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
@@ -124,15 +131,16 @@ public class UserService {
 
         // Inserisco il nuovo edificio
         Document buildingDocument = new Document("name", building.getName())
+            .append("id", building.getId())
             .append("location", building.getLocation())
             .append("users", Arrays.asList(building.getAdmin()))
             .append("admin", building.getAdmin())
-            .append("id", building.getId());
+            .append("sensors", new org.bson.types.BasicBSONList());
         collection.insertOne(buildingDocument);
         
         // Aggiorno la collection degli utenti inserendo l'edificio
-        Document newBuilding = new Document("name", building.getName())
-            .append("id", building.getId());
+        Document newBuilding = new Document("buildingName", building.getName())
+            .append("buildingID", building.getId());
         Bson update = push("buildings", newBuilding);
         usersCollection.updateOne(filter, update);
 
@@ -172,22 +180,18 @@ public class UserService {
         }
 
         // Cancello l'edificio dalla lista degli edifici degli utenti
-        Bson update = pull("buildings", new Document("id", id));
-        Bson filter = elemMatch("buildings", Filters.eq("id", id));
+        Bson update = pull("buildings", new Document("buildingID", id));
+        Bson filter = elemMatch("buildings", Filters.eq("buildingID", id));
         usersCollection.updateMany(filter, update);
         // NOTA indice su buildingId
 
         // Cancello i sensori dell'edificio 
-        filter = Filters.eq("buildingId", id);
+        filter = Filters.eq("buildingID", id);
         sensorsCollection.deleteMany(filter);
 
         // Rimuovi le letture del sensori
-        List<Document> sensors = foundBuilding.getList("sensors", Document.class);
-        for (Document sensor : sensors) {
-            Integer sensorId = sensor.getInteger("id");
-            Bson filterReadings = Filters.eq("sensorId", sensorId);
-            readingsCollection.deleteMany(filterReadings);
-        }
+        Bson filterReadings = Filters.eq("buildingID", id);
+        readingsCollection.deleteMany(filterReadings);
 
         // Elimino l'edificio
         collection.deleteOne(Filters.eq("id", id));
@@ -229,7 +233,7 @@ public class UserService {
         }
 
         // Controllo che l'utente non appartenga già all'edificio
-        Bson buildingFilter = elemMatch("buildings", Filters.eq("id", id));
+        Bson buildingFilter = elemMatch("buildings", Filters.eq("buildingID", id));
         Bson userFilter = Filters.eq("username", username);
         Document foundUserInBuilding = usersCollection.find(
             Filters.and(buildingFilter, userFilter)
@@ -240,8 +244,8 @@ public class UserService {
 
         // Aggiungo l'edificio alla lista dell'utente
         String name = foundBuilding.getString("name");
-        Document newBuilding = new Document("name", name)
-            .append("id", id);
+        Document newBuilding = new Document("buildingName", name)
+            .append("buildingID", id);
         Bson update = push("buildings", newBuilding);
         usersCollection.updateOne(userFilter, update);
 
@@ -279,8 +283,8 @@ public class UserService {
         String response = "";
         List<Document> buildings = foundUser.getList("buildings", Document.class);
         for (Document building : buildings) {
-            String name = building.getString("name");
-            Integer id = building.getInteger("id");
+            String name = building.getString("buildingName");
+            Integer id = building.getInteger("buildingID");
             response = response + " " + "name: " + name + ", id: " + id + "\n"; 
         }
         return response;
@@ -327,7 +331,7 @@ public class UserService {
         Document sensorDocument = new Document("name", sensorName)
             .append("type", sensorType)
             .append("id", sensorId)
-            .append("buildingId", buildingId);
+            .append("buildingID", buildingId);
         sensorsCollection.insertOne(sensorDocument);
 
         // Aggiungi sensore alla lista di sensori dell'edificio
@@ -380,7 +384,7 @@ public class UserService {
         collection.updateMany(buildingFilter, update);
 
         // Rimuovi le letture del sensore
-        Bson filterReadings = Filters.eq("sensorId", sensorId);
+        Bson filterReadings = Filters.eq("sensorID", sensorId);
         readingsCollection.deleteMany(filterReadings);
 
         // Rimuovi le rilevazioni del sensore
@@ -405,7 +409,7 @@ public class UserService {
         Integer sensorId = request.getSensorId();
         Integer buildingId = request.getBuildingId();
         String username = request.getUsername();
-        String timestamp = request.getTimestamp();
+        Long timestamp = request.getTimestamp();
         Float value1 = request.getValue1();
         Float value2 = request.getValue2();
         String type = request.getType();
@@ -423,9 +427,10 @@ public class UserService {
 
         // Aggiungi la lettura alla collection Readings, uso il tipo di sensore per decidere se aggiungere 
         // value1 e/o value2 e come chiamare i campi che li contengon
-        Document readingDocument = new Document("sensorId", sensorId)
-            .append("buildingId", buildingId)
-            .append("timestamp", new Document("$date", new Document("$numberLong", timestamp)));
+        Date date = new Date(timestamp);
+        Document readingDocument = new Document("sensorID", sensorId)
+            .append("buildingID", buildingId)
+            .append("timestamp", date);
 
         if (type.equals("PowerConsumption")) {
             readingDocument.append("consumption", value1);
@@ -491,7 +496,11 @@ public class UserService {
         // Per ogni sensore ottieni l'ultima lettura
         List<String> sensorLastreadings = new ArrayList<>();
         for (Integer sensorId : sensorIds) {
-            Bson filter = Filters.eq("sensorId", sensorId);
+
+            // Controlla se c'e' nel KV DB 
+
+            // Altrimenti la va a prendere da MongoDB
+            Bson filter = Filters.eq("sensorID", sensorId);
             Document foundReading = readingsCollection.find(filter).sort(new Document("timestamp", -1)).first();
             if (foundReading.containsKey("consumption")) {
                 sensorLastreadings.add("Power Consumption :: consumption: " + foundReading.getDouble("consumption"));
@@ -531,4 +540,110 @@ public class UserService {
 
         return response;
     }
+
+    // Descrizione:
+    public String getRainyDays(Integer buildingId, String startTimestamp, String endTimestamp) {
+
+        // Accedi alla collection Readings
+        MongoCollection<Document> collection = database.getCollection(readingsCollectionName);
+
+        System.out.println(1);
+        // Costruzione della pipeline di aggregazione
+        AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+            match(and(
+                gte("timestamp", startTimestamp),
+                lt("timestamp", endTimestamp),
+                eq("buildingID", buildingId),
+                exists("precipitationIntensity", true)
+            )),
+
+            project(new Document("precipitationIntensity", 1)
+                    .append("date", new Document("$dateToString", 
+                            new Document("format", "%d-%m-%Y")
+                            .append("date", "$timestamp")))),
+
+            group("$date", sum("sumPrecipitation", "$precipitationIntensity")),
+
+            match(gt("sumPrecipitation", 0)),
+
+            group(null, sum("count", 1))
+        ));
+
+        // Itera sui risultati e stampa il conteggio dei giorni piovosi
+        for (Document doc : result) {
+            // Accedi al campo "count" del documento
+            int rainyDaysCount = doc.getInteger("count", 0); // Valore di default 0 se "count" non esiste
+            System.out.println("Conteggio dei giorni piovosi: " + rainyDaysCount);
+        }
+        System.out.println(2);
+        return "";
+
+    }
+
+    public String getHighestPowerConsumption(Integer buildingId, String startTimestamp, String endTimestamp) {
+
+        MongoCollection<Document> collection = database.getCollection(readingsCollectionName);
+
+        // Build the aggregation pipeline
+        AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+            // Filter readings based on timestamp, buildingID, and consumption
+            match(and(
+                gte("timestamp", startTimestamp),
+                lt("timestamp", endTimestamp),
+                eq("buildingID", buildingId),
+                exists("consumption", true)
+            )),
+
+            // Group by sensorID and calculate average consumption
+            group("$sensorID", avg("avgPowerConsumption", "$consumption")),
+
+            // Sort by avgPowerConsumption in descending order
+            sort(descending("avgPowerConsumption")),
+
+            // Limit to top 5 results
+            limit(5)
+        ));
+
+        // Print the result
+        for (Document doc : result) {
+            System.out.println(doc.toJson());
+        }
+        return "";
+
+    }
+
+    public String getPeakTemperature(Integer buildingId, String startTimestamp, String endTimestamp) {
+
+        MongoCollection<Document> collection = database.getCollection(readingsCollectionName);
+
+        // Build the aggregation pipeline
+        AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
+            // Filter readings based on timestamp and buildingID, ensuring temperature exists
+            match(and(
+                gte("timestamp", startTimestamp),
+                lt("timestamp", endTimestamp),
+                eq("buildingID", buildingId),
+                exists("temperature", true)
+            )),
+
+            // Group by timestamp and find the max temperature
+            group("$timestamp", max("maxTemp", "$temperature")),
+
+            // Sort by maxTemp in descending order
+            sort(descending("maxTemp")),
+
+            // Limit to the top 1 result
+            limit(1)
+        ));
+
+        // Print the result
+        for (Document doc : result) {
+            System.out.println(doc.getString("maxTemp"));
+
+        }
+
+        return "";
+
+    }
+
 }
