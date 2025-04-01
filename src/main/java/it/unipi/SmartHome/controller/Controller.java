@@ -234,14 +234,14 @@ public class Controller {
     //  String: risultato della statistica
     @GetMapping("/statistics/rainydays")
     public String getRainyDays(
-        @RequestParam(value = "buildingID", defaultValue = "") Integer buildingId,
-        @RequestParam(value = "startTimestamp", defaultValue = "") String startTimestamp,
-        @RequestParam(value = "endTimestamp", defaultValue = "") String endTimestamp
+            @RequestParam(value = "buildingID", defaultValue = "") Integer buildingId,
+            @RequestParam(value = "year", defaultValue = "") Integer year,
+            @RequestParam(value = "month", defaultValue = "") Integer month
     ) {
-
-        String response = userService.getRainyDays(buildingId, startTimestamp, endTimestamp);
-        return response;    
-    
+        if(buildingId == null || year == null || month == null) {
+            return "error";
+        }
+        return userService.getRainyDays(buildingId, year, month).toJson();
     }
 
     // Descrizione:

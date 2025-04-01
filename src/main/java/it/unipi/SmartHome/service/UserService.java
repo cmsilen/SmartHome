@@ -1,11 +1,14 @@
 package it.unipi.SmartHome.service;
 
+import com.mongodb.client.model.Aggregates;
 import it.unipi.SmartHome.model.AddReadingRequest;
 import it.unipi.SmartHome.model.AddSensorToBuildingRequest;
 import it.unipi.SmartHome.model.Building;
 import it.unipi.SmartHome.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.print.Doc;
@@ -542,42 +545,60 @@ public class UserService {
     }
 
     // Descrizione:
-    public String getRainyDays(Integer buildingId, String startTimestamp, String endTimestamp) {
+    public Document getRainyDays(int buildingId, int yearNumber, int monthNumber) {
+        MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
-        // Accedi alla collection Readings
-        MongoCollection<Document> collection = database.getCollection(readingsCollectionName);
-
-        System.out.println(1);
-        // Costruzione della pipeline di aggregazione
-        AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-            match(and(
-                gte("timestamp", startTimestamp),
-                lt("timestamp", endTimestamp),
-                eq("buildingID", buildingId),
-                exists("precipitationIntensity", true)
-            )),
-
-            project(new Document("precipitationIntensity", 1)
-                    .append("date", new Document("$dateToString", 
-                            new Document("format", "%d-%m-%Y")
-                            .append("date", "$timestamp")))),
-
-            group("$date", sum("sumPrecipitation", "$precipitationIntensity")),
-
-            match(gt("sumPrecipitation", 0)),
-
-            group(null, sum("count", 1))
-        ));
-
-        // Itera sui risultati e stampa il conteggio dei giorni piovosi
-        for (Document doc : result) {
-            // Accedi al campo "count" del documento
-            int rainyDaysCount = doc.getInteger("count", 0); // Valore di default 0 se "count" non esiste
-            System.out.println("Conteggio dei giorni piovosi: " + rainyDaysCount);
+        Date startTimestamp;
+        Date endTimestamp;
+        String monthStart = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
+        String monthEnd = ((monthNumber + 1) % 12) < 10 ? "0" + ((monthNumber + 1) % 12) : "" + ((monthNumber + 1) % 12);
+        String yearStart = "" + yearNumber;
+        String yearEnd = "" + (yearNumber + Math.floorDiv(monthNumber + 1, 12));
+        try {
+            startTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").parse(yearStart + "-" + monthStart + "-01 00:00:00.000 UTC");
+            endTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").parse(yearEnd + "-" + monthEnd + "-01 00:00:00.000 UTC");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        System.out.println(2);
-        return "";
 
+        Document stage1 = new Document();
+        stage1.append("timestamp", new Document("$gte", startTimestamp).append("$lt", endTimestamp));
+        stage1.append("buildingID", buildingId);
+        stage1.append("precipitationIntensity", new Document("$exists", true));
+
+        Document stage2 = new Document();
+        stage2.append("precipitationIntensity", 1);
+        stage2.append("date", new Document("$dateToString", new Document("format", "%d-%m-%Y").append("date", "$timestamp")));
+
+        Document stage3 = new Document();
+        stage3.append("_id", "$date");
+        stage3.append("sumPrecipitation", new Document("$sum", "$precipitationIntensity"));
+        stage3 = new Document("$group", stage3);
+
+        Document stage4 = new Document("sumPrecipitation", new Document("$gt", 0));
+
+        Document stage5 = new Document();
+        stage5.append("_id", "");
+        stage5.append("count", new Document("$sum", 1));
+        stage5 = new Document("$group", stage5);
+
+        AggregateIterable<Document> result = readingsCollection.aggregate(
+                Arrays.asList(
+                        Aggregates.match(stage1),
+                        Aggregates.project(stage2),
+                        stage3,
+                        Aggregates.match(stage4),
+                        stage5
+                )
+        );
+
+        if(result.first() != null)
+            return result.first();
+
+        Document ret = new Document();
+        ret.append("_id", "");
+        ret.append("count", 0);
+        return ret;
     }
 
     public String getHighestPowerConsumption(Integer buildingId, String startTimestamp, String endTimestamp) {
