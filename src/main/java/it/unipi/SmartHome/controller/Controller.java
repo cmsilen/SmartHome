@@ -216,10 +216,11 @@ public class Controller {
     // Risposta:
     //  Sensor[]: lista dei sensori
     @GetMapping("/sensors")
-    public ResponseEntity<Sensor[]> getSensors(@RequestParam(value = "username", defaultValue = "") String username) {
+    public String getSensors(@RequestParam(value = "username", defaultValue = "") String username) {
 
-        Sensor[] sensors = new Sensor[0];
-        return ResponseEntity.ok(sensors);
+
+        String response = userService.getUserSensors(username);
+        return response;
 
     }
 

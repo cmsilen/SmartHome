@@ -6,10 +6,7 @@ import it.unipi.SmartHome.model.Building;
 import it.unipi.SmartHome.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Arrays;
-import java.util.Optional;
-import java.util.logging.Filter;
+import java.util.*;
 
 import javax.print.Doc;
 
@@ -463,4 +460,75 @@ public class UserService {
 
     }
 
+    // Descrizione:
+    //  Ottiene la lista dei sensori degli edifici dell'utente 
+    // Collections:
+    //  Buildings: ottiene la lista dei sensori degli edifici dell'utente 
+    //  Readings: se serve ottiene le ultime letture dei sensori
+    // Risposta:
+    //  String: lista dei sensori
+    public String getUserSensors(String username) {
+    
+        // Ottieni la Collection
+        MongoCollection<Document> collection = database.getCollection(buildingsCollection);
+        MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
+
+        // Ottieni la lista dei sensori dell'utente
+        Document buildingFilter = new Document("users", new Document("$in", List.of(username)));
+        List<Document> buildings = collection.find(buildingFilter).into(new ArrayList<>());
+        if (buildings.isEmpty()) {
+            return "User has no buildings";
+        }
+        List<Integer> sensorIds = new ArrayList<>();
+        for (Document building : buildings) {
+            List<Document> sensors = building.getList("sensors", Document.class);
+            for (Document sensor : sensors) {
+                Integer sensorId = sensor.getInteger("id");
+                sensorIds.add(sensorId);
+            }
+        }
+
+        // Per ogni sensore ottieni l'ultima lettura
+        List<String> sensorLastreadings = new ArrayList<>();
+        for (Integer sensorId : sensorIds) {
+            Bson filter = Filters.eq("sensorId", sensorId);
+            Document foundReading = readingsCollection.find(filter).sort(new Document("timestamp", -1)).first();
+            if (foundReading.containsKey("consumption")) {
+                sensorLastreadings.add("Power Consumption :: consumption: " + foundReading.getDouble("consumption"));
+            } 
+            else if (foundReading.containsKey("production")) {
+                sensorLastreadings.add("Solar Panel :: production: " + foundReading.getDouble("production"));
+            } 
+            else if (foundReading.containsKey("temperature")) {
+                sensorLastreadings.add("Temperature :: temperature: " + foundReading.getDouble("temperature"));
+            } 
+            else if (foundReading.containsKey("apparentTemperature")) {
+                sensorLastreadings.add("Humidity :: apparentTemperature: " + foundReading.getDouble("apparentTemperature") + ", humidity: " + foundReading.getDouble("humidity"));
+            } 
+            else if (foundReading.containsKey("pressure")) {
+                sensorLastreadings.add("Pressure :: pressure: " + foundReading.getDouble("pressure"));
+            } 
+            else if (foundReading.containsKey("windSpeed")) {
+                sensorLastreadings.add("Wind :: windSpeed: " + foundReading.getDouble("windSpeed") + ", windBearing: " + foundReading.getDouble("windBearing"));
+            } 
+            else if (foundReading.containsKey("precipitationIntensity")) {
+                sensorLastreadings.add("Precipitation :: precipitationIntensity: " + foundReading.getDouble("precipitationIntensity") + ", SolarPanelprecipitationProbability: " + foundReading.getDouble("precipitationProbability"));
+            }
+            else {
+                sensorLastreadings.add("Sensor type not supported");
+            }
+        }
+
+        // Converti Liste in risposta
+        String response = "";
+        Iterator<String> readingIterator = sensorLastreadings.iterator();
+        Iterator<Integer> idIterator = sensorIds.iterator();
+        while (readingIterator.hasNext() && idIterator.hasNext()) {
+            String reading = readingIterator.next();
+            Integer id = idIterator.next();
+            response += "Sensor id: " + id + ", last reading: " + reading + "\n";
+        }
+
+        return response;
+    }
 }
