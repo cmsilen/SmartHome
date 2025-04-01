@@ -662,38 +662,57 @@ public class UserService {
         return ret;
     }
 
-    public String getPeakTemperature(Integer buildingId, String startTimestamp, String endTimestamp) {
+    public JSONArray getPeakTemperature(int buildingId, int yearNumber, int monthNumber, int dayNumber) {
+        MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
-        MongoCollection<Document> collection = database.getCollection(readingsCollectionName);
+        String dayStart = dayNumber < 10 ? "0" + dayNumber : "" + dayNumber;
+        String monthStart = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
+        String yearStart = "" + yearNumber;
+        Date startTimestamp;
+        Date endTimestamp;
 
-        // Build the aggregation pipeline
-        AggregateIterable<Document> result = collection.aggregate(Arrays.asList(
-            // Filter readings based on timestamp and buildingID, ensuring temperature exists
-            match(and(
-                gte("timestamp", startTimestamp),
-                lt("timestamp", endTimestamp),
-                eq("buildingID", buildingId),
-                exists("temperature", true)
-            )),
-
-            // Group by timestamp and find the max temperature
-            group("$timestamp", max("maxTemp", "$temperature")),
-
-            // Sort by maxTemp in descending order
-            sort(descending("maxTemp")),
-
-            // Limit to the top 1 result
-            limit(1)
-        ));
-
-        // Print the result
-        for (Document doc : result) {
-            System.out.println(doc.getString("maxTemp"));
-
+        try {
+            startTimestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS ZZZ").parse(yearStart + "-" + monthStart + "-" + dayStart + " 00:00:00.000 UTC");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(startTimestamp);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            endTimestamp = calendar.getTime();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
-        return "";
+        Document stage1 = new Document();
+        stage1.append("timestamp", new Document("$gte", startTimestamp).append("$lt", endTimestamp));
+        stage1.append("buildingID", buildingId);
+        stage1.append("temperature", new Document("$exists", true));
+        stage1 = new Document("$match", stage1);
 
+        Document stage2 = new Document();
+        stage2.append("_id", "$timestamp");
+        stage2.append("maxTemp", new Document("$max", "$temperature"));
+        stage2 = new Document("$group", stage2);
+
+        Document stage3 = new Document("$sort", new Document("maxTemp", -1));
+
+        Document stage4 = new Document("$limit", 1);
+
+        AggregateIterable<Document> result = readingsCollection.aggregate(
+                Arrays.asList(
+                        stage1,
+                        stage2,
+                        stage3,
+                        stage4
+                )
+        );
+
+        JSONArray ret = new JSONArray();
+        if(result.first() != null){
+            for(Document d : result){
+                ret.put(d);
+            }
+        }
+
+        return ret;
     }
 
     public Document mostHumidDay(Integer buildingId, Integer yearNumber, Integer monthNumber) {
