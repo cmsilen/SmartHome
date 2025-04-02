@@ -888,6 +888,8 @@ public class UserService {
 
     }
 
+    // Descrizione:
+    //   Calcola la statistica peak power consumption
     public JSONArray getPeakPowerConsumptionHours(int buildingId, int yearNumber, int monthNumber, int dayNumber) {
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
@@ -939,6 +941,31 @@ public class UserService {
         }
 
         return ret;
+    }
+
+    // Descrizione:
+    //   Controlla se la statistica e' nel KV DB
+    public String getPeakPowerConsumptionHoursCache(Integer buildingId, Integer yearNumber, Integer monthNumber, Integer dayNumber) {
+        
+        // Controlla se c'e' nel KV DB
+        String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":" + dayNumber + ":peakPowerConsumption";
+        if (jedis.exists(redisKey)) {
+            System.out.println("Peak Power Consumption found in Redis");
+            return jedis.get(redisKey);
+        }
+        
+        // Altrimenti ritorna null (MISS)
+        return null;
+    }
+
+    // Descrizione:
+    //   Setta il KV DB per la statistica
+    public void setPeakPowerConsumptionHoursCache(Integer buildingId, Integer yearNumber, Integer monthNumber, Integer dayNumber, String value) {
+
+        System.out.println("Setting Peak Power Consumption in Redis");
+        String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":" + dayNumber + ":peakPowerConsumption";
+        jedis.set(redisKey, value);
+
     }
 
     public Document percentageOfPowerFromSolarPanels(int buildingId, int yearNumber, int monthNumber) {
