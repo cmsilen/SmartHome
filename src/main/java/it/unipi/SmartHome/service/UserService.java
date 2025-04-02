@@ -395,7 +395,7 @@ public class UserService {
         Bson update = push("sensors", embeddedSensorDocument);
         collection.updateOne(filter, update);
 
-        return new Document("result", "success").append("sensor", sensorDocument);
+        return new Document("result", "success").append("output", sensorDocument);
     }
 
     // Descrizione:
