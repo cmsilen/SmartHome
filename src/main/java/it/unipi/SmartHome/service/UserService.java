@@ -351,50 +351,51 @@ public class UserService {
     //  Buildings: aggiungi il sensore alla lista dei sensori dell’edificio
     // Risposta:
     //  String: messaggio di conferma
-    public String addSensorToBuilding(AddSensorToBuildingRequest addSensorToBuildingRequest) {
+    public Document addSensorToBuilding(AddSensorToBuildingRequest addSensorToBuildingRequest) {
 
         // Accedi alle collections
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
         MongoCollection<Document> sensorsCollection = database.getCollection(sensorsCollectionName);
 
         // Estrai informazioni
-        String username = addSensorToBuildingRequest.getUsername(); 
-        Integer sensorId = addSensorToBuildingRequest.getSensor().getId();
+        String username = addSensorToBuildingRequest.getUsername();
         String sensorName = addSensorToBuildingRequest.getSensor().getName();
         String sensorType = addSensorToBuildingRequest.getSensor().getType();
         Integer buildingId = addSensorToBuildingRequest.getSensor().getBuildingId();
         
-        // Controlla che l'id del sensore sia unico
-        Bson filter = Filters.eq("id", sensorId);
-        Document foundSensor = sensorsCollection.find(filter).first();
-        if (foundSensor != null) {
-            return "Sensor already exists";
-        }
+        // Ricava id del sensore
+        // Ricavo id
+        Document foundSensor = sensorsCollection.aggregate(
+                List.of(new Document("$group", new Document("_id", "")
+                        .append("lastID", new Document("$max", "$id")))
+                )
+        ).first();
+        int newID = (foundSensor != null) ? foundSensor.getInteger("lastID") + 1 : 0;
         
         // Controlla che l'edificio esista e che l'admin sia admin
         Bson buildingFilter = Filters.eq("id", buildingId);
         Bson adminFilter = Filters.eq("admin", username);
-        filter = Filters.and(buildingFilter, adminFilter);
+        Bson filter = Filters.and(buildingFilter, adminFilter);
         Document foundBuilding = collection.find(filter).first();
         if (foundBuilding == null) {
-            return "Building does not exist or user is not admin";
+            return new Document("result", "Building does not exist or user is not admin");
         }
 
         // Aggiungi sensore alla collection sensori
         Document sensorDocument = new Document("name", sensorName)
             .append("type", sensorType)
-            .append("id", sensorId)
+            .append("id", newID)
             .append("buildingID", buildingId);
         sensorsCollection.insertOne(sensorDocument);
 
         // Aggiungi sensore alla lista di sensori dell'edificio
         Document embeddedSensorDocument = new Document("name", sensorName)
             .append("type", sensorType)
-            .append("id", sensorId);
+            .append("id", newID);
         Bson update = push("sensors", embeddedSensorDocument);
         collection.updateOne(filter, update);
 
-        return "Sensor added";
+        return new Document("result", "success").append("sensor", sensorDocument);
     }
 
     // Descrizione:

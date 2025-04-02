@@ -161,10 +161,7 @@ public class Controller {
     //  String: messaggio di conferma
     @PostMapping("/building/sensor")
     public String addSensorToBuilding(@RequestBody AddSensorToBuildingRequest addSensorToBuildingRequest) {
-
-        String response = userService.addSensorToBuilding(addSensorToBuildingRequest);
-        return response;
-
+        return userService.addSensorToBuilding(addSensorToBuildingRequest).toJson();
     }
 
     // Descrizione:
