@@ -372,7 +372,7 @@ public class Controller {
         if (response != null) {
             return response;
         }
-        
+
         // ha fatto MISS quindi aggiorna la cache
         response = userService.getPercentageOfPowerFromSolarPanels(buildingId, year, month).toJson();
         userService.setPercentageOfPowerFromSolarPanelsCache(buildingId, year, month, response);
@@ -397,7 +397,18 @@ public class Controller {
         if(buildingId == null || year == null || month == null) {
             return "error";
         }
-        return userService.getMostHumidDay(buildingId, year, month).toJson();
+
+        // Controlla se e' nella cache
+        String response = userService.getMostHumidDayCache(buildingId, year, month);
+        if (response != null) {
+            return response;
+        }
+        
+        // ha fatto MISS quindi aggiorna la cache
+        response = userService.getMostHumidDay(buildingId, year, month).toJson();
+        userService.setMostHumidDayCache(buildingId, year, month, response);
+        return response;
+
     }
 
 }

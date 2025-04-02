@@ -1063,6 +1063,8 @@ public class UserService {
 
     }
 
+    // Descrizione:
+    //   Calcola la statistica most humid day
     public Document getMostHumidDay(Integer buildingId, Integer yearNumber, Integer monthNumber) {
 
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
@@ -1121,6 +1123,31 @@ public class UserService {
         ret.append("_id", "");
         ret.append("count", 0);
         return ret;
+
+    }
+
+    // Descrizione:
+    //   Controlla se la statistica e' nel KV DB
+    public String getMostHumidDayCache(Integer buildingId, Integer yearNumber, Integer monthNumber) {
+        
+        // Controlla se c'e' nel KV DB
+        String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":mostHumidDay";
+        if (jedis.exists(redisKey)) {
+            System.out.println("Most Humid Day found in Redis");
+            return jedis.get(redisKey);
+        }
+        
+        // Altrimenti ritorna null (MISS)
+        return null;
+    }
+    
+    // Descrizione:
+    //   Setta il KV DB per la statistica
+    public void setMostHumidDayCache(Integer buildingId, Integer yearNumber, Integer monthNumber, String value) {
+
+        System.out.println("Setting Most Humid Day in Redis");
+        String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":mostHumidDay";
+        jedis.set(redisKey, value);
 
     }
 
