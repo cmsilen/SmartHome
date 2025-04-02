@@ -19,6 +19,7 @@ import com.mongodb.client.*;
 import com.mongodb.ConnectionString;
 import com.mongodb.client.model.Filters;
 import org.bson.conversions.Bson;
+import redis.clients.jedis.Jedis;
 import org.bson.Document;
 import java.lang.reflect.Method;
 import static com.mongodb.client.model.Updates.pull;
@@ -34,8 +35,7 @@ public class UserService {
     // NOTA si potrebbero usare delle utility function tipo utenteEsiste(username) oppure edificioEsiste(id)
     // TODO aggiungere KV in GET /sensors
     // TODO aggiornare KV in POST /reading 
-    // TODO aggiornare POST /reading il timestamp e' sbagliato
-    // TODO aggiungere password ad utente
+    // NICE TO HAVE: fare delle funzioni di utility per evitare codice copy paste nelle query (ma anche sti cazzi)
 
 
     // Parametri di connessione a MongoDB
@@ -43,12 +43,20 @@ public class UserService {
     String buildingsCollection = "Buildings";
     String sensorsCollectionName = "Sensors";
     String readingsCollectionName = "Readings";
-    String dbName = "SmartHome";
+    String dbName = "SmartHome2";
 
     // Connessione a MongoDB
     ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
     MongoClient mongoClient = MongoClients.create(uri);
     MongoDatabase database = mongoClient.getDatabase(dbName);
+
+    // Parametri di connessione a Redis
+    String redisHost = "localhost";
+    Integer redisPort = 6379;
+
+    // Connessione a Redis
+    Jedis jedis = new Jedis(redisHost, redisPort);
+
     // Secondo me quetsa roba e' una maialata pero' per ora teniamola cosi'
 
 
@@ -431,40 +439,51 @@ public class UserService {
         }
 
         // Aggiungi la lettura alla collection Readings, uso il tipo di sensore per decidere se aggiungere 
-        // value1 e/o value2 e come chiamare i campi che li contengon
+        // value1 e/o value2 e come chiamare i campi che li contengono
+        // Inoltre aggiorno Redis
         Date date = new Date(timestamp);
         Document readingDocument = new Document("sensorID", sensorId)
             .append("buildingID", buildingId)
             .append("timestamp", date);
+        String redisKey = "reading:" + sensorId + ":last";
+        String redisValue = null;
 
         if (type.equals("PowerConsumption")) {
             readingDocument.append("consumption", value1);
+            redisValue = "Power Consumption :: consumption: " + value1;
         } 
         else if (type.equals("SolarPanel")) {
-            readingDocument.append("production", value1);
+            readingDocument.append("production", value1); 
+            redisValue = "Solar Panel :: production: " + value1;
         } 
         else if (type.equals("Temperature")) {
             readingDocument.append("temperature", value1);
+            redisValue = "Temperature :: temperature: " + value1;
         }
         else if (type.equals("Humidity")) {
             readingDocument.append("apparentTemperature", value1);
             readingDocument.append("humidity", value2);
+            redisValue = "Humidity :: apparentTemperature: " + value1 + ", humidity: " + value2;
         } 
         else if (type.equals("Pressure")) {
             readingDocument.append("pressure", value1);
+            redisValue = "Pressure :: pressure: " + value1;
         } 
         else if (type.equals("Wind")) {
             readingDocument.append("windSpeed", value1);
             readingDocument.append("windBearing", value2);
+            redisValue = "Wind :: windSpeed: " + value1 + ", windBearing: " + value2;
         } 
         else if (type.equals("Precipitation")) {
             readingDocument.append("precipitationIntensity", value1);
             readingDocument.append("precipitationProbability", value2);
+            redisValue = "Precipitation :: precipitationIntensity: " + value1 + ", precipitationProbability: " + value2;
         } 
         else {
             return "Sensor type not supported";
         }
         readingsCollection.insertOne(readingDocument);
+        jedis.set(redisKey, redisValue);
 
         return "Reading added successfully!";
 
@@ -484,8 +503,11 @@ public class UserService {
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
         // Ottieni la lista dei sensori dell'utente
+        System.out.println(username);
         Document buildingFilter = new Document("users", new Document("$in", List.of(username)));
-        List<Document> buildings = collection.find(buildingFilter).into(new ArrayList<>());
+        List<Document> buildings = collection.find(
+            buildingFilter
+        ).into(new ArrayList<>());
         if (buildings.isEmpty()) {
             return "User has no buildings";
         }
@@ -503,34 +525,60 @@ public class UserService {
         for (Integer sensorId : sensorIds) {
 
             // Controlla se c'e' nel KV DB 
+            String jedisKey = "reading:" + sensorId + ":last";
+            if (jedis.exists(jedisKey)) {
+                System.out.println("Reading found in Redis");
+                String reading = jedis.get(jedisKey);
+                sensorLastreadings.add(reading);
+                continue;
+            }
 
             // Altrimenti la va a prendere da MongoDB
             Bson filter = Filters.eq("sensorID", sensorId);
             Document foundReading = readingsCollection.find(filter).sort(new Document("timestamp", -1)).first();
             if (foundReading.containsKey("consumption")) {
-                sensorLastreadings.add("Power Consumption :: consumption: " + foundReading.getDouble("consumption"));
+                System.out.println(1);
+                Double consumption = getReadingData(foundReading, "consumption");
+                sensorLastreadings.add("Power Consumption :: consumption: " + consumption);
             } 
             else if (foundReading.containsKey("production")) {
-                sensorLastreadings.add("Solar Panel :: production: " + foundReading.getDouble("production"));
+                System.out.println(2);
+                Double production = getReadingData(foundReading, "production");
+                sensorLastreadings.add("Solar Panel :: production: " + production);
             } 
             else if (foundReading.containsKey("temperature")) {
-                sensorLastreadings.add("Temperature :: temperature: " + foundReading.getDouble("temperature"));
+                System.out.println(3);
+                Double temperature = getReadingData(foundReading, "temperature");
+                sensorLastreadings.add("Temperature :: temperature: " + temperature);
             } 
             else if (foundReading.containsKey("apparentTemperature")) {
-                sensorLastreadings.add("Humidity :: apparentTemperature: " + foundReading.getDouble("apparentTemperature") + ", humidity: " + foundReading.getDouble("humidity"));
+                System.out.println(4);
+                Double apparentTemperature = getReadingData(foundReading, "apparentTemperature");
+                Double humidity = getReadingData(foundReading, "humidity");
+                sensorLastreadings.add("Humidity :: apparentTemperature: " + apparentTemperature + ", humidity: " + humidity);
             } 
             else if (foundReading.containsKey("pressure")) {
-                sensorLastreadings.add("Pressure :: pressure: " + foundReading.getDouble("pressure"));
+                System.out.println(5);
+                Double pressure = getReadingData(foundReading, "pressure");
+                sensorLastreadings.add("Pressure :: pressure: " + pressure);
             } 
             else if (foundReading.containsKey("windSpeed")) {
-                sensorLastreadings.add("Wind :: windSpeed: " + foundReading.getDouble("windSpeed") + ", windBearing: " + foundReading.getDouble("windBearing"));
+                System.out.println(6);
+                Double windSpeed = getReadingData(foundReading, "windSpeed");
+                Double windBearing = getReadingData(foundReading, "windBearing");
+                sensorLastreadings.add("Wind :: windSpeed: " + windSpeed + ", windBearing: " + windBearing);
             } 
             else if (foundReading.containsKey("precipitationIntensity")) {
-                sensorLastreadings.add("Precipitation :: precipitationIntensity: " + foundReading.getDouble("precipitationIntensity") + ", SolarPanelprecipitationProbability: " + foundReading.getDouble("precipitationProbability"));
+                System.out.println(7);
+                Double precipitationIntensity = getReadingData(foundReading, "precipitationIntensity");
+                Double precipitationProbability = getReadingData(foundReading, "precipitationProbability");
+                sensorLastreadings.add("Precipitation :: precipitationIntensity: " + precipitationIntensity + ", precipitationProbability: " + precipitationProbability);
             }
             else {
+                System.out.println(8);
                 sensorLastreadings.add("Sensor type not supported");
             }
+            jedis.set(jedisKey, sensorLastreadings.get(sensorLastreadings.size() - 1));
         }
 
         // Converti Liste in risposta
@@ -544,6 +592,22 @@ public class UserService {
         }
 
         return response;
+    }
+    
+    // Helper Function
+    // Serve perché se il campo e' 0 allora per mongoDb e' un intero e se provi a leggere un double
+    // ti da errore
+    private Double getReadingData(Document reading, String field) {
+        Object value = reading.get(field);
+        Double result = null;
+        if (value instanceof Double) {
+            result = (Double) value;
+        } else if (value instanceof Integer) {
+            result = ((Integer) value).doubleValue();
+        } else {
+            System.out.println("Reading is of unknown type");
+        }
+        return result;
     }
 
     // Descrizione:
