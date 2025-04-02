@@ -305,7 +305,16 @@ public class Controller {
         if(buildingId == null || year == null || month == null || day == null) {
             return "error";
         }
-        return userService.getPeakTemperature(buildingId, year, month, day).toString(4);
+
+        // Controlla se e' nella cache
+        String response = userService.getPeakTemperatureCache(buildingId, year, month, day);
+        if (response != null) {
+            return response;
+        }
+        // ha fatto MISS quindi aggiorna la cache
+        response = userService.getPeakTemperature(buildingId, year, month, day).toString(4);
+        userService.setPeakTemperatureCache(buildingId, year, month, day, response);
+        return response;
     }
 
     // Descrizione:

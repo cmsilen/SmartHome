@@ -799,7 +799,7 @@ public class UserService {
     }
 
     // Descrizione:
-    //   Setta il KV DB per i giorni di pioggia
+    //   Setta il KV DB per la statistica
     public void setTop5PowerConsumptionCache(Integer buildingId, Integer yearNumber, Integer monthNumber, Integer dayNumber, String value) {
 
         System.out.println("Setting Top 5 Power Consumption in Redis");
@@ -808,6 +808,8 @@ public class UserService {
 
     }
 
+    // Descrizione
+    //   Calcola la statistica peak temperature
     public JSONArray getPeakTemperature(int buildingId, int yearNumber, int monthNumber, int dayNumber) {
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
@@ -859,6 +861,31 @@ public class UserService {
         }
 
         return ret;
+    }
+
+    // Descrizione
+    //  Controlla se la statistica e' nel KV DB
+    public String getPeakTemperatureCache(Integer buildingId, Integer yearNumber, Integer monthNumber, Integer dayNumber) {
+        
+        // Controlla se c'e' nel KV DB
+        String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":" + dayNumber + ":peakTemperature";
+        if (jedis.exists(redisKey)) {
+            System.out.println("Peak Temperature found in Redis");
+            return jedis.get(redisKey);
+        }
+        
+        // Altrimenti ritorna null (MISS)
+        return null;
+    }
+
+    // Descrizione:
+    //   Setta il KV DB per la statistica
+    public void setPeakTemperatureCache(Integer buildingId, Integer yearNumber, Integer monthNumber, Integer dayNumber, String value) {
+
+        System.out.println("Setting Peak Temperature in Redis");
+        String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":" + dayNumber + ":peakTemperature";
+        jedis.set(redisKey, value);
+
     }
 
     public JSONArray getPeakPowerConsumptionHours(int buildingId, int yearNumber, int monthNumber, int dayNumber) {
