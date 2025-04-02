@@ -157,6 +157,12 @@ public class UserService {
         Bson update = push("buildings", newBuilding);
         usersCollection.updateOne(filter, update);
 
+        // Invalido il KV DB
+        String redisKey = "building:" + building.getAdmin() + ":buildings";
+        if (jedis.exists(redisKey)) {
+            jedis.del(redisKey);
+        }
+
         return "Building created";
 
     }
@@ -208,6 +214,13 @@ public class UserService {
 
         // Elimino l'edificio
         collection.deleteOne(Filters.eq("id", id));
+
+        // Invalido il KV DB
+        String redisKey = "building:" + username + ":buildings";
+        if (jedis.exists(redisKey)) {
+            jedis.del(redisKey);
+        }
+
         return "Building deleted successfully! id: " + id;
     }
 
@@ -270,6 +283,12 @@ public class UserService {
             update
         );
 
+        // Invalido il KV DB
+        String redisKey = "building:" + username + ":buildings";
+        if (jedis.exists(redisKey)) {
+            jedis.del(redisKey);
+        }
+
         return "User added to building successfully!";
     }
 
@@ -292,6 +311,14 @@ public class UserService {
             return "User not found";
         }
 
+        // Controlla se il risultato e' cachato su redis
+        String redisKey = "building:" + username + ":buildings";
+        if (jedis.exists(redisKey)) {
+            System.out.println("Buildings found in Redis");
+            String response = jedis.get(redisKey);
+            return response;
+        }
+
         // Leggi e concatena gli edifici
         String response = "";
         List<Document> buildings = foundUser.getList("buildings", Document.class);
@@ -300,6 +327,7 @@ public class UserService {
             Integer id = building.getInteger("buildingID");
             response = response + " " + "name: " + name + ", id: " + id + "\n"; 
         }
+        jedis.set(redisKey, response);
         return response;
 
     }
