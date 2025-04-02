@@ -32,6 +32,12 @@ ottimizzerebbe la POST /reading che controlla che il sensore sia nel building (v
 
 
 ### DA FARE:
-[1] Repliche (Dio bono)
-[2] Macchina Virtuale
-[3] Indici
+1. Deployment su Cluster locale, quindi gestire le repliche sia per mongoDB che per Redis (bisogna avere almeno tre repliche per mongoDB e valurare per entrambi l'eventual consistency) e valutare se implementare lo sharding (quindi pensiamo una possibile soluzione di sharding poi l'analizziamo e valutiamo se vale la pena implementarla o meno)
+2. Deployment sulla Macchina Virtuale (bisogna sentire il Ducange)
+3. Indici, bisogna discuterne e poi fare delle prove con e senza (immagino basti far vedere dei dati che abbiamo ricavato e magari gli script che abbiamo usato per ottenerli)
+4. Rivedere la Design Section leggendo bene cosa e' scritto nella consegna
+5. Pensare ai test da fare sull'API durante la presentazione (quindi quale API chiamare, che test fare con POSTMAN e cose varie)
+6. Scrivere la Documentazione seguendo la consegna 
+7. Fare degli unit test da fargli vedere (tipo codice python che registra l'utente e poi lo fa loggare)
+8. Fare statistiche sulle varie operazioni nel DB 
+
