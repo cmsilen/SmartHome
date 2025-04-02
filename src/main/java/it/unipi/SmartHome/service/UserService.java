@@ -46,13 +46,13 @@ public class UserService {
     String buildingsCollection = "Buildings";
     String sensorsCollectionName = "Sensors";
     String readingsCollectionName = "Readings";
-    String dbName = "SmartHome2";
+    String dbName = "SmartHome";
 
     // Connessione a MongoDB
-    // ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
+    ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
 
     // Connessione al cluster di MongoDB 
-    ConnectionString uri = new ConnectionString("mongodb://localhost:27018");
+    //ConnectionString uri = new ConnectionString("mongodb://localhost:27018");
     MongoClientSettings mcs = MongoClientSettings.builder()
         .applyConnectionString(uri)
         .readPreference(ReadPreference.nearest())
@@ -134,30 +134,30 @@ public class UserService {
     //   Users: Inserisci building nella lista degli edifici dell'utente
     // Risposta:
     //   String: messaggio di conferma
-    public String addBuilding(Building building) {
+    public Document addBuilding(Building building) {
         
         // Accedo alla Collection
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
         MongoCollection<Document> usersCollection = database.getCollection(usersCollectionName);
 
-        // Controllo che non ci sia gia' un edificio con lo stesso nome
-        Document foundBuilding = collection.find(
-            Filters.eq("id", building.getId())
+        // Ricavo id
+        Document foundBuilding = collection.aggregate(
+            List.of(new Document("$group", new Document("_id", "")
+                                            .append("lastID", new Document("$max", "$id")))
+            )
         ).first();
-        if (foundBuilding != null) {
-            return "Building already exists";
-        }
+        int newID = (foundBuilding != null) ? foundBuilding.getInteger("lastID") + 1 : 0;
 
         // Controllo che l'utente esista
         Bson filter = Filters.eq("username", building.getAdmin());
         Document foundUser = usersCollection.find(filter).first();
         if (foundUser == null) {
-            return "Admin not found";
+            return new Document("result", "non-existent user");
         }
 
         // Inserisco il nuovo edificio
         Document buildingDocument = new Document("name", building.getName())
-            .append("id", building.getId())
+            .append("id", newID)
             .append("location", building.getLocation())
             .append("users", Arrays.asList(building.getAdmin()))
             .append("admin", building.getAdmin())
@@ -166,7 +166,7 @@ public class UserService {
         
         // Aggiorno la collection degli utenti inserendo l'edificio
         Document newBuilding = new Document("buildingName", building.getName())
-            .append("buildingID", building.getId());
+            .append("buildingID", newID);
         Bson update = push("buildings", newBuilding);
         usersCollection.updateOne(filter, update);
 
@@ -176,8 +176,7 @@ public class UserService {
             jedis.del(redisKey);
         }
 
-        return "Building created";
-
+        return new Document("result", "success").append("output", newBuilding);
     }
 
     // Descrizione:

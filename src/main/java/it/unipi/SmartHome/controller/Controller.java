@@ -6,6 +6,7 @@ import javax.annotation.processing.Generated;
 
 import it.unipi.SmartHome.model.*;
 import it.unipi.SmartHome.service.UserService;
+import org.bson.Document;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -109,10 +110,7 @@ public class Controller {
     //  String: messaggio di conferma
     @PostMapping("/building")
     public String addBuilding(@RequestBody Building building) {
-
-        String response = userService.addBuilding(building);
-        return response;
-
+        return userService.addBuilding(building).toJson();
     }
 
     // Descrizione:
