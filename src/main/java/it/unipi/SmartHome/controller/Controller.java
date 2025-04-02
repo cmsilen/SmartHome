@@ -242,13 +242,17 @@ public class Controller {
             return "error";
         }
 
+        // Controlla se e' nella cache
         String response = userService.getRainyDaysCache(buildingId, year, month);
         if (response != null) {
             return response;
         }
+
+        // ha fatto MISS quindi aggiorna la cache
         response = userService.getRainyDays(buildingId, year, month).toJson();
         userService.setRainyDaysCache(buildingId, year, month, response);
         return response;
+
     }
 
     // Descrizione:
@@ -269,7 +273,18 @@ public class Controller {
         if(buildingId == null || year == null || month == null || day == null) {
             return "error";
         }
-        return userService.getTop5PowerConsumption(buildingId, year, month, day).toString(4);
+
+        // Controlla se e' nella cache
+        String response = userService.getTop5PowerConsumptionCache(buildingId, year, month, day);
+        if (response != null) {
+            return response;
+        }
+
+        // ha fatto MISS quindi aggiorna la cache
+        response = userService.getTop5PowerConsumption(buildingId, year, month, day).toString(4);
+        userService.setTop5PowerConsumptionCache(buildingId, year, month, day, response);
+        return response;
+    
     }
 
     // Descrizione:

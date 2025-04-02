@@ -728,6 +728,8 @@ public class UserService {
 
     }
 
+    // Descrizione:
+    //   Calcola la statistica top 5 power consumption
     public JSONArray getTop5PowerConsumption(int buildingId, int yearNumber, int monthNumber, int dayNumber) {
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
@@ -779,6 +781,31 @@ public class UserService {
         }
 
         return ret;
+    }
+
+    // Descrizione:
+    //   Controlla se la statistica e' nel KV DB
+    public String getTop5PowerConsumptionCache(Integer buildingId, Integer yearNumber, Integer monthNumber, Integer dayNumber) {
+        
+        // Controlla se c'e' nel KV DB
+        String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":" + dayNumber + ":top5PowerConsumption";
+        if (jedis.exists(redisKey)) {
+            System.out.println("Top 5 Power Consumption found in Redis");
+            return jedis.get(redisKey);
+        }
+        
+        // Altrimenti ritorna null (MISS)
+        return null;
+    }
+
+    // Descrizione:
+    //   Setta il KV DB per i giorni di pioggia
+    public void setTop5PowerConsumptionCache(Integer buildingId, Integer yearNumber, Integer monthNumber, Integer dayNumber, String value) {
+
+        System.out.println("Setting Top 5 Power Consumption in Redis");
+        String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":" + dayNumber + ":top5PowerConsumption";
+        jedis.set(redisKey, value);
+
     }
 
     public JSONArray getPeakTemperature(int buildingId, int yearNumber, int monthNumber, int dayNumber) {
