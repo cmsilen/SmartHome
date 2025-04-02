@@ -17,6 +17,9 @@ import javax.print.Doc;
 
 import com.mongodb.client.*;
 import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.ReadPreference;
+import com.mongodb.WriteConcern;
 import com.mongodb.client.model.Filters;
 import org.bson.conversions.Bson;
 import redis.clients.jedis.Jedis;
@@ -46,7 +49,17 @@ public class UserService {
     String dbName = "SmartHome2";
 
     // Connessione a MongoDB
-    ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
+    // ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
+
+    // Connessione al cluster di MongoDB 
+    ConnectionString uri = new ConnectionString("mongodb://localhost:27018");
+    MongoClientSettings mcs = MongoClientSettings.builder()
+        .applyConnectionString(uri)
+        .readPreference(ReadPreference.nearest())
+        .retryWrites(true)
+        .writeConcern(WriteConcern.ACKNOWLEDGED)
+        .build();
+    
     MongoClient mongoClient = MongoClients.create(uri);
     MongoDatabase database = mongoClient.getDatabase(dbName);
 
@@ -1140,7 +1153,7 @@ public class UserService {
         // Altrimenti ritorna null (MISS)
         return null;
     }
-    
+
     // Descrizione:
     //   Setta il KV DB per la statistica
     public void setMostHumidDayCache(Integer buildingId, Integer yearNumber, Integer monthNumber, String value) {
