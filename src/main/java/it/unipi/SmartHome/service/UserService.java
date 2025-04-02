@@ -968,7 +968,9 @@ public class UserService {
 
     }
 
-    public Document percentageOfPowerFromSolarPanels(int buildingId, int yearNumber, int monthNumber) {
+    // Descrizione:
+    //   Calcola la statistica percentage of power from solar panels
+    public Document getPercentageOfPowerFromSolarPanels(int buildingId, int yearNumber, int monthNumber) {
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
         Date startTimestamp;
@@ -1033,6 +1035,31 @@ public class UserService {
 
         Document ret = new Document("percentage", 0);
         return ret;
+
+    }
+
+    // Descrizione:
+    //   Controlla se la statistica e' nel KV DB
+    public String getPercentageOfPowerFromSolarPanelsCache(Integer buildingId, Integer yearNumber, Integer monthNumber) {
+        
+        // Controlla se c'e' nel KV DB
+        String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":percentageOfPowerFromSolarPanels";
+        if (jedis.exists(redisKey)) {
+            System.out.println("Percentage of Power from Solar Panels found in Redis");
+            return jedis.get(redisKey);
+        }
+        
+        // Altrimenti ritorna null (MISS)
+        return null;
+    }
+
+    // Descrizione:
+    //   Setta il KV DB per la statistica
+    public void setPercentageOfPowerFromSolarPanelsCache(Integer buildingId, Integer yearNumber, Integer monthNumber, String value) {
+
+        System.out.println("Setting Percentage of Power from Solar Panels in Redis");
+        String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":percentageOfPowerFromSolarPanels";
+        jedis.set(redisKey, value);
 
     }
 

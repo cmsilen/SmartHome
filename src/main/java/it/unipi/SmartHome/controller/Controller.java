@@ -350,8 +350,6 @@ public class Controller {
     }
 
     // Descrizione:
-
-    // Descrizione:
     //   Percentage of power from solar panels
     // Parametri:
     //   Integer: buildingId
@@ -368,7 +366,18 @@ public class Controller {
         if(buildingId == null || year == null || month == null) {
             return "error";
         }
-        return userService.percentageOfPowerFromSolarPanels(buildingId, year, month).toJson();
+
+        // Controlla se e' nella cache
+        String response = userService.getPercentageOfPowerFromSolarPanelsCache(buildingId, year, month);
+        if (response != null) {
+            return response;
+        }
+        
+        // ha fatto MISS quindi aggiorna la cache
+        response = userService.getPercentageOfPowerFromSolarPanels(buildingId, year, month).toJson();
+        userService.setPercentageOfPowerFromSolarPanelsCache(buildingId, year, month, response);
+        return response;
+        
     }
 
     // Descrizione:
