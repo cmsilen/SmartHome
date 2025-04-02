@@ -241,7 +241,14 @@ public class Controller {
         if(buildingId == null || year == null || month == null) {
             return "error";
         }
-        return userService.getRainyDays(buildingId, year, month).toJson();
+
+        String response = userService.getRainyDaysCache(buildingId, year, month);
+        if (response != null) {
+            return response;
+        }
+        response = userService.getRainyDays(buildingId, year, month).toJson();
+        userService.setRainyDaysCache(buildingId, year, month, response);
+        return response;
     }
 
     // Descrizione:

@@ -639,6 +639,7 @@ public class UserService {
     }
 
     // Descrizione:
+    //   Calcola la statistica rainy days
     public Document getRainyDays(int buildingId, int yearNumber, int monthNumber) {
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
@@ -700,6 +701,31 @@ public class UserService {
         ret.append("_id", "");
         ret.append("count", 0);
         return ret;
+    }
+
+    // Descrizione:
+    //   Controlla se la statistica e' nel KV DB
+    public String getRainyDaysCache(Integer buildingId, Integer yearNumber, Integer monthNumber) {
+        
+        // Controlla se c'e' nel KV DB
+        String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":rainyDays";
+        if (jedis.exists(redisKey)) {
+            System.out.println("Rainy days found in Redis");
+            return jedis.get(redisKey);
+        }
+        
+        // Altrimenti ritorna null (MISS)
+        return null;
+    }
+
+    // Descrizione:
+    //   Setta il KV DB per i giorni di pioggia
+    public void setRainyDaysCache(Integer buildingId, Integer yearNumber, Integer monthNumber, String value) {
+
+        System.out.println("Setting rainy days in Redis");
+        String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":rainyDays";
+        jedis.set(redisKey, value);
+
     }
 
     public JSONArray getTop5PowerConsumption(int buildingId, int yearNumber, int monthNumber, int dayNumber) {

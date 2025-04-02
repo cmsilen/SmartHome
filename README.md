@@ -8,10 +8,8 @@ supponiamo aggiunga letture sempre piu' recenti e mai antecedenti
 POST /building, POST /building/user DELETE /building invalidano la cache 
 GET /buildings se fa miss lo salva
 
-[3] Retrieval of statistics results -> ho pensato 'statistics:<timestamp>:<buildingID>' = <result>
+[3] Retrieval of statistics results -> ho pensato 'statistics:<year>:<month>:<buildingID>:<name>' = <result>
 se si fa miss allora vengono letti dal database e poi inseriti (non devono essere aggiornati)
-il timestamp potrebbe essere 'YYYY-MM' e result e' l'oggetto e' il JSON (?) oppure il Document (?) oppure 
-il metodo ritorna document.toJson() quindi puo' essere una stringa 
 
 DA FARE:
 [1] Repliche (Dio bono)
