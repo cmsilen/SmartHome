@@ -317,38 +317,32 @@ public class UserService {
     //   Users: Ottiene la lista degli edifici dell'utente
     // Risposta:
     //   Lista degli edifici dell'utente
-    public String getUserBuildings(String username) {
-    
+    public Document getUserBuildings(String username) {
+        if(username == null || username.isEmpty()) {
+            return new Document("result", "invalid parameters");
+        }
 
         // Ottieni la Collection
         MongoCollection<Document> usersCollection = database.getCollection(usersCollectionName);
-
-        // Controlla che l'utente esista
-        Bson filter = Filters.eq("username", username);
-        Document foundUser = usersCollection.find(filter).first();
-        if (foundUser == null) {
-            return "User not found";
-        }
 
         // Controlla se il risultato e' cachato su redis
         String redisKey = "building:" + username + ":buildings";
         if (jedis.exists(redisKey)) {
             System.out.println("Buildings found in Redis");
-            String response = jedis.get(redisKey);
-            return response;
+            Document response = Document.parse(jedis.get(redisKey));
+            return new Document("result", "success").append("buildings", response.getList("buildings", Document.class));
         }
 
-        // Leggi e concatena gli edifici
-        String response = "";
-        List<Document> buildings = foundUser.getList("buildings", Document.class);
-        for (Document building : buildings) {
-            String name = building.getString("buildingName");
-            Integer id = building.getInteger("buildingID");
-            response = response + " " + "name: " + name + ", id: " + id + "\n"; 
+        // Controlla che l'utente esista
+        Bson filter = Filters.eq("username", username);
+        Document foundUser = usersCollection.find(filter).first();
+        if (foundUser == null) {
+            return new Document("result", "user not found");
         }
-        jedis.set(redisKey, response);
-        return response;
 
+        Document data = new Document("buildings", foundUser.getList("buildings", Document.class));
+        jedis.set(redisKey, data.toJson());
+        return new Document("result", "success").append("buildings", foundUser.getList("buildings", Document.class));
     }
 
     // Descrizione:

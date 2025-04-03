@@ -81,9 +81,7 @@ public class Controller {
     //  buildingsResponse: lista degli edifici dell’utente
     @GetMapping("/buildings")
     public String getBuildings(@RequestParam(value = "username", defaultValue = "") String username) {
-
-        String response = userService.getUserBuildings(username); 
-        return response;
+        return userService.getUserBuildings(username).toJson();
     }
 
     // Descrizione:
