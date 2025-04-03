@@ -634,6 +634,9 @@ public class UserService {
     // Risposta:
     //  String: lista dei sensori
     public String getUserSensors(String username, Integer buildingID) {
+        if (username == null || buildingID == null) {
+            return new Document("error", "invalid parameters").toJson();
+        }
     
         // Ottieni la Collection
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
@@ -721,18 +724,17 @@ public class UserService {
             jedis.set(jedisKey, sensorLastreadings.get(sensorLastreadings.size() - 1));
         }
 
-        // Converti Liste in risposta
-        String response = "";
+        // Converti Liste in risposta TODO controllare il valore di lastReading
         Iterator<String> readingIterator = sensorLastreadings.iterator();
         Iterator<Integer> idIterator = sensorIds.iterator();
+        JSONArray result = new JSONArray();
         while (readingIterator.hasNext() && idIterator.hasNext()) {
             String reading = readingIterator.next();
             Integer id = idIterator.next();
-            response += "Sensor id: " + id + ", last reading: " + reading + "\n";
+            result.put(new Document("sensorID", id).append("lastReading", reading));
         }
 
-        Document responseDocument = new Document("response", response);
-        return responseDocument.toJson();
+        return result.toString(4);
     }
     
     // Helper Function
