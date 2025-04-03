@@ -111,10 +111,7 @@ public class Controller {
         @RequestParam(value = "id", defaultValue = "") Integer id, 
         @RequestParam(value = "admin", defaultValue = "") String username
     ) {
-
-        String response = userService.removeBuilding(id, username);
-        return response;
-
+        return userService.removeBuilding(id, username).toJson();
     }
 
     // Descrizione:

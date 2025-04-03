@@ -201,8 +201,11 @@ public class UserService {
     //   Readings: Rimuovi letture del sensore
     // Risposta:
     //   String: messaggio di conferma
-    public String removeBuilding(Integer id, String username) {
-        
+    public Document removeBuilding(Integer id, String username) {
+        if(id == null || username == null || username.isEmpty()) {
+            return new Document("result", "invalid parameters");
+        }
+
         // Accedo alla Collection
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
         MongoCollection<Document> usersCollection = database.getCollection(usersCollectionName);
@@ -214,13 +217,13 @@ public class UserService {
             Filters.eq("id", id)
         ).first();
         if (foundBuilding == null) {
-            return "Building not found";
+            return new Document("result", "non-existent building");
         }
 
         // Controllo che l'utente sia l'admin dell'edificio
         String admin = foundBuilding.getString("admin");
         if (!admin.equals(username)) {
-            return "User is not admin of the building";
+            return new Document("result", "User is not admin of the building");
         }
 
         // Cancello l'edificio dalla lista degli edifici degli utenti
@@ -246,7 +249,7 @@ public class UserService {
             jedis.del(redisKey);
         }
 
-        return "Building deleted successfully! id: " + id;
+        return new Document(redisKey, "Building deleted successfully! id: " + id);
     }
 
     // Descrizione:
