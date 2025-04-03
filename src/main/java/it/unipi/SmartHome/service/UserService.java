@@ -77,6 +77,9 @@ public class UserService {
         return user.getUsername() != null && !user.getUsername().isEmpty() && user.getPassword() != null && !user.getPassword().isEmpty() &&
                 user.getName() != null && !user.getName().isEmpty() && user.getSurname() != null && !user.getSurname().isEmpty();
     }
+    private boolean isBuildingValid(Building building) {
+        return building.getName() != null && !building.getName().isEmpty() && building.getAdmin() != null && building.getAdmin().isEmpty();
+    }
 
 
     // Descrizione:
@@ -142,6 +145,9 @@ public class UserService {
     // Risposta:
     //   String: messaggio di conferma
     public Document addBuilding(Building building) {
+        if(!this.isBuildingValid(building)) {
+            return new Document("result", "invalid parameters");
+        }
         
         // Accedo alla Collection
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
