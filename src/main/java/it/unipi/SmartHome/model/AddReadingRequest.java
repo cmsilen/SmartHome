@@ -4,8 +4,6 @@ public class AddReadingRequest {
 
     private Integer sensorId;
     private Integer buildingId;
-    private Long timestamp;
-    private String username;
     private Float value1;
     private Float value2;
 
@@ -20,18 +18,6 @@ public class AddReadingRequest {
     }   
     public void setBuildingId(Integer buildingId) {
         this.buildingId = buildingId;
-    }
-    public Long getTimestamp() {
-        return timestamp;
-    }
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-    public String getUsername() {
-        return username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
     }
     public Float getValue1() {
         return value1;

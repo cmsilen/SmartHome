@@ -547,34 +547,24 @@ public class UserService {
     // Risposta:
     //  String: messaggio di conferma
     public String addReading(AddReadingRequest request) {
+        if (request.getSensorId() == null || request.getBuildingId() == null) {
+            return new Document("error", "invalid parameters").toJson();
+        }
     
         // Accedi alle collections
-        MongoCollection<Document> collection = database.getCollection(buildingsCollection);
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
         MongoCollection<Document> sensorsCollection = database.getCollection(sensorsCollectionName);
 
         // Estrai informazioni
         Integer sensorId = request.getSensorId();
         Integer buildingId = request.getBuildingId();
-        String username = request.getUsername();
-        Long timestamp = request.getTimestamp();
         Float value1 = request.getValue1();
         Float value2 = request.getValue2();
 
-        // Controlla che l'edificio esista, che l'admin sia admin
-        Bson buildingFilter = Filters.eq("id", buildingId);
-        Bson adminFilter = Filters.eq("admin", username);
-        Bson filter = Filters.and(buildingFilter, adminFilter);
-        Document foundBuilding = collection.find(filter).first();
-        if (foundBuilding == null) {
-            Document notFoundBuilding = new Document("error", "Building does not exist or user is not admin");
-            return notFoundBuilding.toJson();
-        }
-
         // Controlla che il sensore esista e che sia nel building
         Bson sensorFilter = Filters.eq("id", sensorId);
-        buildingFilter = Filters.eq("buildingID", buildingId);
-        filter = Filters.and(sensorFilter, buildingFilter);
+        Bson buildingFilter = Filters.eq("buildingID", buildingId);
+        Bson filter = Filters.and(sensorFilter, buildingFilter);
         Document foundSensor = sensorsCollection.find(filter).first();
         if (foundSensor == null) {
             Document notFoundSensor = new Document("error", "Sensor does not exist or is not in building");
@@ -585,7 +575,7 @@ public class UserService {
         // Aggiungi la lettura alla collection Readings, uso il tipo di sensore per decidere se aggiungere 
         // value1 e/o value2 e come chiamare i campi che li contengono
         // Inoltre aggiorno Redis
-        Date date = new Date(timestamp);
+        Date date = new Date();
         Document readingDocument = new Document("sensorID", sensorId)
             .append("buildingID", buildingId)
             .append("timestamp", date);
@@ -593,6 +583,7 @@ public class UserService {
         String redisValue = null;
         String type = foundSensor.getString("type");
 
+        // TODO DA RIGUARDARE redisValue (forse meglio un json?)
         if (type.equals("PowerConsumption")) {
             readingDocument.append("consumption", value1);
             redisValue = "Power Consumption :: consumption: " + value1;
