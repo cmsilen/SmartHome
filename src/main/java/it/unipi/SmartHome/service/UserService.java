@@ -494,7 +494,9 @@ public class UserService {
     // Risposta:
     //  String: messaggio di conferma
     public String removeSensorFromBuilding(Integer sensorId, Integer buildingId, String username) {
-        
+        if (sensorId == null || buildingId == null || username == null || username.isEmpty()) {
+            return new Document("error", "invalid parameters").toJson();
+        }
         // Accedi alle collections
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
         MongoCollection<Document> sensorsCollection = database.getCollection(sensorsCollectionName);
