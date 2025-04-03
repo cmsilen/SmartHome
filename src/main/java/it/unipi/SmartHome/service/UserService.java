@@ -108,7 +108,7 @@ public class UserService {
     //   Users: Controlla se l'utente esiste e se la password e' corretta
     // Risposta:
     //   String: messaggio di conferma
-    public String loginUser(String username, String password) {
+    public Document loginUser(String username, String password) {
 
         // Accedo alla Collection
         MongoCollection<Document> collection = database.getCollection(usersCollectionName);
@@ -120,11 +120,7 @@ public class UserService {
         )).first();
 
         // Se l'utente esiste e la password e' corretta ritorno un messaggio di conferma altrimenti di errore
-        if (foundUser != null) {
-            return "User logged in successfully!";
-        } else {
-            return "Invalid username or password";
-        }
+        return new Document("result", (foundUser != null)? "success" : "Invalid username or password");
     }
 
     // Descrizione:

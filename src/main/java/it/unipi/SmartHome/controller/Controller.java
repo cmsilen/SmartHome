@@ -59,16 +59,7 @@ public class Controller {
     //  String: messaggio di conferma
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest loginRequest) {
-
-        String username = loginRequest.getUsername();
-        String password = loginRequest.getPassword();
-
-        String response = userService.loginUser(
-            username,
-            password
-        );
-        return response;
-
+        return userService.loginUser(loginRequest.getUsername(), loginRequest.getPassword()).toJson();
     }
 
     // Descrizione:
