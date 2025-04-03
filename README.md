@@ -82,19 +82,66 @@ MongoClientSettings mcs = MongoClientSettings.builder()
     .build();
 ```
 ### MongoDB sharding
-Andrebbe spiegato perché non conviene farlo
+Si puo' fare uno sharding di Readings sull'id del building
+
+### Eviction Policy Redis
+Si setta in questo modo
+```bash
+CONFIG SET maxmemory-policy allkeys-lru
+```
+
 ### Repliche Redis
-Non mi sembra veramente necessario
+
+Ci saranno 3 server (che partizionano le richieste in maniera uniforme) ognuno con una replica.
+Bisogna creare le cartelle per i 6 server.
+```bash
+mkdir 7000
+mkdir 7001
+mkdir 7002
+mkdir 7003
+mkdir 7004
+mkdir 7005
+```
+Poi creare un redis.conf all'interno di ciascuna directory cambiando la porta
+```bash
+port 7000
+cluster-enabled yes
+cluster-config-file nodes.conf
+cluster-node-timeout 5000
+appendonly yes
+```
+Poi rimanendo nella directory bisogna usare il comando
+```bash
+redis-server ./redis.conf
+```
+E infine per far partire il cluster bisogna usare il seguente comando
+```bash
+redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 --cluster-replicas 1
+```
+Per connettersi da Java usare questa funzione:
+```java
+    private JedisCluster connectToJedisCluster() {
+
+        Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
+        jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7001));
+        jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7002));
+        jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7003));
+
+        JedisCluster jedis = new JedisCluster(jedisClusterNodes);
+        return jedis;
+
+    }
+```
 
 
 
 ### DA FARE:
 1. Deployment su Cluster locale, quindi gestire le repliche sia per mongoDB che per Redis (bisogna avere almeno tre repliche per mongoDB e valurare per entrambi l'eventual consistency) e valutare se implementare lo sharding (quindi pensiamo una possibile soluzione di sharding poi l'analizziamo e valutiamo se vale la pena implementarla o meno) 
-[Fatto tutto bisogna solo argomentare MongoDB Sharding e fare Repliche ed Eviction Redis]
+[Manca argomentare MongoDB Sharding ed Eviction Redis]
 2. Deployment sulla Macchina Virtuale (bisogna sentire il Ducange)
 3. Indici, bisogna discuterne e poi fare delle prove con e senza (immagino basti far vedere dei dati che abbiamo ricavato e magari gli script che abbiamo usato per ottenerli)
 4. Pensare ai test da fare sull'API durante la presentazione (quindi quale API chiamare, che test fare con POSTMAN e cose varie)
 5. Scrivere la Documentazione seguendo la consegna 
-6. Fare degli unit test da fargli vedere (tipo codice python che registra l'utente e poi lo fa loggare)
+6. Fare degli unit test da fargli vedere (tipo codice python che registra l'utente e poi lo fa loggare) [Fatto]
 7. Fare statistiche sulle varie operazioni nel DB 
 

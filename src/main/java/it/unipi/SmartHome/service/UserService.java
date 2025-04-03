@@ -1,37 +1,42 @@
 package it.unipi.SmartHome.service;
 
-import com.mongodb.client.model.Aggregates;
-import it.unipi.SmartHome.model.AddReadingRequest;
-import it.unipi.SmartHome.model.AddSensorToBuildingRequest;
-import it.unipi.SmartHome.model.Building;
-import it.unipi.SmartHome.model.User;
+import static com.mongodb.client.model.Filters.elemMatch;
+import static com.mongodb.client.model.Updates.pull;
+import static com.mongodb.client.model.Updates.push;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.json.JSONArray;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.logging.Filter;
-
-import javax.print.Doc;
-
-import com.mongodb.client.*;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
+import com.mongodb.client.AggregateIterable;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
-import org.bson.conversions.Bson;
-import redis.clients.jedis.Jedis;
-import org.bson.Document;
-import java.lang.reflect.Method;
-import static com.mongodb.client.model.Updates.pull;
-import static com.mongodb.client.model.Updates.push;
-import static com.mongodb.client.model.Aggregates.*;
-import static com.mongodb.client.model.Filters.*;
-import static com.mongodb.client.model.Accumulators.*;
-import static com.mongodb.client.model.Sorts.*;
+
+import it.unipi.SmartHome.model.AddReadingRequest;
+import it.unipi.SmartHome.model.AddSensorToBuildingRequest;
+import it.unipi.SmartHome.model.Building;
+import it.unipi.SmartHome.model.User;
+import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.JedisCluster;
 
 @Service
 public class UserService {
@@ -47,7 +52,7 @@ public class UserService {
     String buildingsCollection = "Buildings";
     String sensorsCollectionName = "Sensors";
     String readingsCollectionName = "Readings";
-    String dbName = "SmartHome2";
+    String dbName = "SmartHome";
 
     // Connessione a MongoDB
     // ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
@@ -69,7 +74,8 @@ public class UserService {
     Integer redisPort = 6379;
 
     // Connessione a Redis
-    Jedis jedis = new Jedis(redisHost, redisPort);
+    // Jedis jedis = new Jedis(redisHost, redisPort);
+    JedisCluster jedis = connectToJedisCluster();
 
     // Secondo me quetsa roba e' una maialata pero' per ora teniamola cosi'
 
@@ -81,6 +87,18 @@ public class UserService {
     private boolean isBuildingValid(Building building) {
         return building.getName() != null && !building.getName().isEmpty() && building.getAdmin() != null;
         // ho tolto building.getAdmin().isEmpty()
+    }
+
+    private JedisCluster connectToJedisCluster() {
+
+        Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
+        jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7001));
+        jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7002));
+        jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7003));
+
+        JedisCluster jedis = new JedisCluster(jedisClusterNodes);
+        return jedis;
+
     }
 
 
