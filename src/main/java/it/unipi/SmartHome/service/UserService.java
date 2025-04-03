@@ -72,6 +72,12 @@ public class UserService {
 
     // Secondo me quetsa roba e' una maialata pero' per ora teniamola cosi'
 
+    // FUNZIONI DI UTILITY
+    private boolean isUserValid(User user) {
+        return user.getUsername() != null && !user.getUsername().isEmpty() && user.getPassword() != null && !user.getPassword().isEmpty() &&
+                user.getName() != null && !user.getName().isEmpty() && user.getSurname() != null && !user.getSurname().isEmpty();
+    }
+
 
     // Descrizione:
     //   Registrazione di un nuovo utente
@@ -79,7 +85,10 @@ public class UserService {
     //   Users: Inserisci nuovo utente
     // Risposta:
     //   String: messaggio di conferma
-    public String signUpUser(User user) {
+    public Document signUpUser(User user) {
+        if(!this.isUserValid(user)) {
+            return new Document("result", "invalid parameters");
+        }
 
         // Accedo alla Collection
         MongoCollection<Document> collection = database.getCollection(usersCollectionName);
@@ -87,9 +96,9 @@ public class UserService {
         // Controllo che non ci sia gia' un utente con lo stesso username
         Document foundUser = collection.find(Filters.eq("username", user.getUsername())).first();
         if (foundUser != null) {
-            return "User already exists";
+            return new Document("result", "User already exists");
         }
-        // NOTA indice su username        
+        // NOTA indice su username
 
         // Inserisco il nuovo utente
         Document userDocument = new Document("username", user.getUsername())
@@ -98,7 +107,7 @@ public class UserService {
             .append("password", user.getPassword())
             .append("buildings", new org.bson.types.BasicBSONList());
         collection.insertOne(userDocument);
-        return "User created";
+        return new Document("result", "success");
 
     }
 
@@ -109,7 +118,9 @@ public class UserService {
     // Risposta:
     //   String: messaggio di conferma
     public Document loginUser(String username, String password) {
-
+        if(username == null || password == null || username.isEmpty() || password.isEmpty()) {
+            return new Document("result", "invalid parameters");
+        }
         // Accedo alla Collection
         MongoCollection<Document> collection = database.getCollection(usersCollectionName);
 

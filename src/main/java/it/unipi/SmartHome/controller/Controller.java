@@ -43,10 +43,7 @@ public class Controller {
     //  String: messaggio di conferma
     @PostMapping("/signup")
     public String signup(@RequestBody User user) {
-
-        String response = userService.signUpUser(user);
-        return response;
-
+        return userService.signUpUser(user).toJson();
     }
 
     // Descrizione:
