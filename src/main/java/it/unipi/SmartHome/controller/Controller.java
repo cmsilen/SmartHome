@@ -6,6 +6,7 @@ import javax.annotation.processing.Generated;
 
 import it.unipi.SmartHome.model.*;
 import it.unipi.SmartHome.service.UserService;
+import org.bson.Document;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,10 +43,7 @@ public class Controller {
     //  String: messaggio di conferma
     @PostMapping("/signup")
     public String signup(@RequestBody User user) {
-
-        String response = userService.signUpUser(user);
-        return response;
-
+        return userService.signUpUser(user);
     }
 
     // Descrizione:
@@ -58,16 +56,7 @@ public class Controller {
     //  String: messaggio di conferma
     @PostMapping("/login")
     public String login(@RequestBody LoginRequest loginRequest) {
-
-        String username = loginRequest.getUsername();
-        String password = loginRequest.getPassword();
-
-        String response = userService.loginUser(
-            username,
-            password
-        );
-        return response;
-
+        return userService.loginUser(loginRequest.getUsername(), loginRequest.getPassword());
     }
 
     // Descrizione:
@@ -92,9 +81,7 @@ public class Controller {
     //  buildingsResponse: lista degli edifici dell’utente
     @GetMapping("/buildings")
     public String getBuildings(@RequestParam(value = "username", defaultValue = "") String username) {
-
-        String response = userService.getUserBuildings(username); 
-        return response;
+        return userService.getUserBuildings(username);
     }
 
     // Descrizione:
@@ -109,10 +96,7 @@ public class Controller {
     //  String: messaggio di conferma
     @PostMapping("/building")
     public String addBuilding(@RequestBody Building building) {
-
-        String response = userService.addBuilding(building);
-        return response;
-
+        return userService.addBuilding(building);
     }
 
     // Descrizione:
@@ -127,10 +111,7 @@ public class Controller {
         @RequestParam(value = "id", defaultValue = "") Integer id, 
         @RequestParam(value = "admin", defaultValue = "") String username
     ) {
-
-        String response = userService.removeBuilding(id, username);
-        return response;
-
+        return userService.removeBuilding(id, username);
     }
 
     // Descrizione:
@@ -163,10 +144,7 @@ public class Controller {
     //  String: messaggio di conferma
     @PostMapping("/building/sensor")
     public String addSensorToBuilding(@RequestBody AddSensorToBuildingRequest addSensorToBuildingRequest) {
-
-        String response = userService.addSensorToBuilding(addSensorToBuildingRequest);
-        return response;
-
+        return userService.addSensorToBuilding(addSensorToBuildingRequest);
     }
 
     // Descrizione:

@@ -47,7 +47,7 @@ public class UserService {
     String buildingsCollection = "Buildings";
     String sensorsCollectionName = "Sensors";
     String readingsCollectionName = "Readings";
-    String dbName = "SmartHome";
+    String dbName = "SmartHome2";
 
     // Connessione a MongoDB
     // ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
@@ -73,6 +73,16 @@ public class UserService {
 
     // Secondo me quetsa roba e' una maialata pero' per ora teniamola cosi'
 
+    // FUNZIONI DI UTILITY
+    private boolean isUserValid(User user) {
+        return user.getUsername() != null && !user.getUsername().isEmpty() && user.getPassword() != null && !user.getPassword().isEmpty() &&
+                user.getName() != null && !user.getName().isEmpty() && user.getSurname() != null && !user.getSurname().isEmpty();
+    }
+    private boolean isBuildingValid(Building building) {
+        return building.getName() != null && !building.getName().isEmpty() && building.getAdmin() != null;
+        // ho tolto building.getAdmin().isEmpty()
+    }
+
 
     // Descrizione:
     //   Registrazione di un nuovo utente
@@ -81,6 +91,11 @@ public class UserService {
     // Risposta:
     //   JSON: Utente creato
     public String signUpUser(User user) {
+
+        // Valido i parametri
+        if(!this.isUserValid(user)) {
+            return new Document("error", "invalid parameters").toJson();
+        }
 
         // Accedo alla Collection
         MongoCollection<Document> collection = database.getCollection(usersCollectionName);
@@ -91,7 +106,7 @@ public class UserService {
             Document notFoundError = new Document("error", "User already exists");
             return notFoundError.toJson();
         }
-        // NOTA indice su username        
+        // NOTA indice su username
 
         // Inserisco il nuovo utente
         Document userDocument = new Document("username", user.getUsername())
@@ -112,6 +127,9 @@ public class UserService {
     //   JSON: Utente trovato
     public String loginUser(String username, String password) {
 
+        if(username == null || password == null || username.isEmpty() || password.isEmpty()) {
+            return new Document("error", "invalid parameters").toJson();
+        }
         // Accedo alla Collection
         MongoCollection<Document> collection = database.getCollection(usersCollectionName);
 
@@ -138,6 +156,10 @@ public class UserService {
     // Risposta:
     //   String: messaggio di conferma
     public String addBuilding(Building building) {
+
+        if(!this.isBuildingValid(building)) {
+            return new Document("error", "invalid parameters").toJson();
+        }
         
         // Accedo alla Collection
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
@@ -189,7 +211,7 @@ public class UserService {
         }
 
         return buildingDocument.toJson();
-
+    
     }
 
     // Descrizione:
@@ -203,6 +225,10 @@ public class UserService {
     //   String: messaggio di conferma
     public String removeBuilding(Integer id, String username) {
         
+        if(id == null || username == null || username.isEmpty()) {
+            return new Document("result", "invalid parameters").toJson();
+        }
+
         // Accedo alla Collection
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
         MongoCollection<Document> usersCollection = database.getCollection(usersCollectionName);
@@ -333,24 +359,25 @@ public class UserService {
     // Risposta:
     //   Lista degli edifici dell'utente
     public String getUserBuildings(String username) {
-    
+        if(username == null || username.isEmpty()) {
+            return new Document("result", "invalid parameters").toJson();
+        }
 
         // Ottieni la Collection
         MongoCollection<Document> usersCollection = database.getCollection(usersCollectionName);
-
-        // Controlla che l'utente esista
-        Bson filter = Filters.eq("username", username);
-        Document foundUser = usersCollection.find(filter).first();
-        if (foundUser == null) {
-            return "User not found";
-        }
 
         // Controlla se il risultato e' cachato su redis
         String redisKey = "building:" + username + ":buildings";
         if (jedis.exists(redisKey)) {
             System.out.println("Buildings found in Redis");
-            String response = jedis.get(redisKey);
-            return response;
+            return jedis.get(redisKey);
+        }
+
+        // Controlla che l'utente esista 
+        Bson filter = Filters.eq("username", username);
+        Document foundUser = usersCollection.find(filter).first();
+        if (foundUser == null) {
+            return new Document("error", "user does not exist").toJson();
         }
 
         // Leggi e concatena gli edifici
@@ -385,18 +412,11 @@ public class UserService {
         MongoCollection<Document> sensorsCollection = database.getCollection(sensorsCollectionName);
 
         // Estrai informazioni
-        String username = addSensorToBuildingRequest.getUsername(); 
-        Integer sensorId = addSensorToBuildingRequest.getSensor().getId();
+        String username = addSensorToBuildingRequest.getUsername();
         String sensorName = addSensorToBuildingRequest.getSensor().getName();
         String sensorType = addSensorToBuildingRequest.getSensor().getType();
+        Integer sensorId = 0;
         Integer buildingId = addSensorToBuildingRequest.getSensor().getBuildingId();
-        
-        // Controlla che l'id del sensore sia unico
-        // Bson filter = Filters.eq("id", sensorId);
-        // Document foundSensor = sensorsCollection.find(filter).first();
-        // if (foundSensor != null) {
-        //     return "Sensor already exists";
-        // }
         
         // Controlla che l'edificio esista e che l'admin sia admin
         Bson buildingFilter = Filters.eq("id", buildingId);
