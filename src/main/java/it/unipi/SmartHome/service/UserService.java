@@ -55,7 +55,7 @@ public class UserService {
     String dbName = "SmartHome";
 
     // Connessione a MongoDB
-    // ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
+    //ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
 
     // Connessione al cluster di MongoDB 
     ConnectionString uri = new ConnectionString("mongodb://localhost:27018");
@@ -320,31 +320,37 @@ public class UserService {
         }
 
         // Controllo che gli utenti esistano
+        //controllo sullo user
         Document foundUser = usersCollection.find(
-            Filters.eq("username", username)
+                Filters.eq("username", username)
         ).first();
         if (foundUser == null) {
             Document notFoundUser = new Document("error", "User not found");
             return notFoundUser.toJson();
         }
-        // Controllo che l'admin sia effettivamente admin
-        if (admin.equals(foundBuilding.getString("admin")) == false) {
+
+        //controllo sull'admin
+        if(!foundBuilding.getString("admin").equals(admin)) {
             Document notFoundAdmin = new Document("error", "User is not admin of the building");
             return notFoundAdmin.toJson();
         }
 
-        // Controllo che l'utente non appartenga già all'edificio
-        Bson buildingFilter = elemMatch("buildings", Filters.eq("buildingID", id));
-        Bson userFilter = Filters.eq("username", username);
-        Document foundUserInBuilding = usersCollection.find(
-            Filters.and(buildingFilter, userFilter)
-        ).first();
-        if (foundUserInBuilding != null) {
+        // Controllo che l'utente non appartenga già all'edificio (i dati sono in building)
+        List<String> usersInBuilding = foundBuilding.getList("users", String.class);
+        boolean found = false;
+        for (String user : usersInBuilding) {
+            if(user.equals(username)) {
+                found = true;
+                break;
+            }
+        }
+        if(found) {
             Document alreadyInBuilding = new Document("error", "User already in building");
             return alreadyInBuilding.toJson();
         }
 
         // Aggiungo l'edificio alla lista dell'utente
+        Bson userFilter = Filters.eq("username", username);
         String name = foundBuilding.getString("name");
         Document newBuilding = new Document("buildingName", name)
             .append("buildingID", id);
