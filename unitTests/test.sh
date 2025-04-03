@@ -1,0 +1,9 @@
+python3 unit_test_signup.py
+python3 unit_test_login.py
+python3 unit_test_add_building.py
+python3 unit_test_remove_building.py
+python3 unit_test_add_user_to_building.py
+python3 unit_test_get_buildings.py
+python3 unit_test_add_sensor.py
+python3 unit_test_remove_sensor.py
+python3 unit_test_add_reading.py

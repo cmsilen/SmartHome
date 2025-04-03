@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Filter;
 
 import javax.print.Doc;
 
@@ -46,7 +47,7 @@ public class UserService {
     String buildingsCollection = "Buildings";
     String sensorsCollectionName = "Sensors";
     String readingsCollectionName = "Readings";
-    String dbName = "SmartHome2";
+    String dbName = "SmartHome";
 
     // Connessione a MongoDB
     // ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
@@ -78,7 +79,7 @@ public class UserService {
     // Collections:
     //   Users: Inserisci nuovo utente
     // Risposta:
-    //   String: messaggio di conferma
+    //   JSON: Utente creato
     public String signUpUser(User user) {
 
         // Accedo alla Collection
@@ -87,7 +88,8 @@ public class UserService {
         // Controllo che non ci sia gia' un utente con lo stesso username
         Document foundUser = collection.find(Filters.eq("username", user.getUsername())).first();
         if (foundUser != null) {
-            return "User already exists";
+            Document notFoundError = new Document("error", "User already exists");
+            return notFoundError.toJson();
         }
         // NOTA indice su username        
 
@@ -98,7 +100,7 @@ public class UserService {
             .append("password", user.getPassword())
             .append("buildings", new org.bson.types.BasicBSONList());
         collection.insertOne(userDocument);
-        return "User created";
+        return userDocument.toJson();
 
     }
 
@@ -107,7 +109,7 @@ public class UserService {
     // Collections:
     //   Users: Controlla se l'utente esiste e se la password e' corretta
     // Risposta:
-    //   String: messaggio di conferma
+    //   JSON: Utente trovato
     public String loginUser(String username, String password) {
 
         // Accedo alla Collection
@@ -121,9 +123,10 @@ public class UserService {
 
         // Se l'utente esiste e la password e' corretta ritorno un messaggio di conferma altrimenti di errore
         if (foundUser != null) {
-            return "User logged in successfully!";
+            return foundUser.toJson();
         } else {
-            return "Invalid username or password";
+            Document notFoundUser = new Document("error", "User not found or password incorrect");
+            return notFoundUser.toJson();
         }
     }
 
@@ -140,19 +143,28 @@ public class UserService {
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
         MongoCollection<Document> usersCollection = database.getCollection(usersCollectionName);
 
-        // Controllo che non ci sia gia' un edificio con lo stesso nome
-        Document foundBuilding = collection.find(
-            Filters.eq("id", building.getId())
-        ).first();
-        if (foundBuilding != null) {
-            return "Building already exists";
-        }
-
         // Controllo che l'utente esista
         Bson filter = Filters.eq("username", building.getAdmin());
         Document foundUser = usersCollection.find(filter).first();
         if (foundUser == null) {
-            return "Admin not found";
+            Document adminNotFound = new Document("error", "Admin not found");
+            return adminNotFound.toJson();
+        }
+        
+        // Calcolo l'id del nuovo edificio
+        Document stage = new Document();
+        stage.append("_id", null);
+        stage.append("maxID", new Document("$max", "$id"));
+        stage = new Document("$group", stage);
+
+        AggregateIterable<Document> result = collection.aggregate(
+            Arrays.asList(stage)
+        );
+        if (result.first() != null) {
+            Integer maxId = result.first().getInteger("maxID");
+            building.setId(maxId + 1);
+        } else {
+            building.setId(0);
         }
 
         // Inserisco il nuovo edificio
@@ -176,7 +188,7 @@ public class UserService {
             jedis.del(redisKey);
         }
 
-        return "Building created";
+        return buildingDocument.toJson();
 
     }
 
@@ -202,13 +214,15 @@ public class UserService {
             Filters.eq("id", id)
         ).first();
         if (foundBuilding == null) {
-            return "Building not found";
+            Document notFoundBuilding = new Document("error", "Building not found");    
+            return notFoundBuilding.toJson();
         }
 
         // Controllo che l'utente sia l'admin dell'edificio
         String admin = foundBuilding.getString("admin");
         if (!admin.equals(username)) {
-            return "User is not admin of the building";
+            Document notFoundAdmin = new Document("error", "User is not admin of the building"); 
+            return notFoundAdmin.toJson();
         }
 
         // Cancello l'edificio dalla lista degli edifici degli utenti
@@ -234,7 +248,8 @@ public class UserService {
             jedis.del(redisKey);
         }
 
-        return "Building deleted successfully! id: " + id;
+        Document deletedBuilding = new Document("id", id);
+        return deletedBuilding.toJson();
     }
 
     // Descrizione:
@@ -256,7 +271,8 @@ public class UserService {
             Filters.eq("id", id)
         ).first();
         if (foundBuilding == null) {
-            return "Building not found";
+            Document notFoundBuilding = new Document("error", "Building not found");
+            return notFoundBuilding.toJson();
         }
 
         // Controllo che gli utenti esistano
@@ -264,11 +280,13 @@ public class UserService {
             Filters.eq("username", username)
         ).first();
         if (foundUser == null) {
-            return "User not found";
+            Document notFoundUser = new Document("error", "User not found");
+            return notFoundUser.toJson();
         }
         // Controllo che l'admin sia effettivamente admin
         if (admin.equals(foundBuilding.getString("admin")) == false) {
-            return "User is not admin of the building";
+            Document notFoundAdmin = new Document("error", "User is not admin of the building");
+            return notFoundAdmin.toJson();
         }
 
         // Controllo che l'utente non appartenga già all'edificio
@@ -278,7 +296,8 @@ public class UserService {
             Filters.and(buildingFilter, userFilter)
         ).first();
         if (foundUserInBuilding != null) {
-            return "User already in building";
+            Document alreadyInBuilding = new Document("error", "User already in building");
+            return alreadyInBuilding.toJson();
         }
 
         // Aggiungo l'edificio alla lista dell'utente
@@ -302,7 +321,9 @@ public class UserService {
             jedis.del(redisKey);
         }
 
-        return "User added to building successfully!";
+        Document addedUser = new Document("username", username)
+            .append("buildingID", id);
+        return addedUser.toJson();
     }
 
     // Descrizione:
@@ -333,15 +354,20 @@ public class UserService {
         }
 
         // Leggi e concatena gli edifici
-        String response = "";
         List<Document> buildings = foundUser.getList("buildings", Document.class);
+        List<Document> buildingsList = new ArrayList<>();
         for (Document building : buildings) {
             String name = building.getString("buildingName");
             Integer id = building.getInteger("buildingID");
-            response = response + " " + "name: " + name + ", id: " + id + "\n"; 
+            buildingsList.add(
+                new Document()
+                    .append("name", name)
+                    .append("id", id)
+            );
         }
-        jedis.set(redisKey, response);
-        return response;
+        Document responseDocument = new Document("buildings", buildingsList);
+        jedis.set(redisKey, responseDocument.toJson());
+        return responseDocument.toJson();
 
     }
 
@@ -366,19 +392,36 @@ public class UserService {
         Integer buildingId = addSensorToBuildingRequest.getSensor().getBuildingId();
         
         // Controlla che l'id del sensore sia unico
-        Bson filter = Filters.eq("id", sensorId);
-        Document foundSensor = sensorsCollection.find(filter).first();
-        if (foundSensor != null) {
-            return "Sensor already exists";
-        }
+        // Bson filter = Filters.eq("id", sensorId);
+        // Document foundSensor = sensorsCollection.find(filter).first();
+        // if (foundSensor != null) {
+        //     return "Sensor already exists";
+        // }
         
         // Controlla che l'edificio esista e che l'admin sia admin
         Bson buildingFilter = Filters.eq("id", buildingId);
         Bson adminFilter = Filters.eq("admin", username);
-        filter = Filters.and(buildingFilter, adminFilter);
+        Bson filter = Filters.and(buildingFilter, adminFilter);
         Document foundBuilding = collection.find(filter).first();
         if (foundBuilding == null) {
-            return "Building does not exist or user is not admin";
+            Document notFoundBuilding = new Document("error", "Building does not exist or user is not admin");
+            return notFoundBuilding.toJson();
+        }
+         
+        // Calcola ID del sensore
+        Document stage = new Document();
+        stage.append("_id", null);
+        stage.append("maxID", new Document("$max", "$id"));
+        stage = new Document("$group", stage);
+
+        AggregateIterable<Document> result = sensorsCollection.aggregate(
+            Arrays.asList(stage)
+        );
+        if (result.first() != null) {
+            Integer maxId = result.first().getInteger("maxID");
+            sensorId = maxId + 1;
+        } else {
+            sensorId = 0;
         }
 
         // Aggiungi sensore alla collection sensori
@@ -395,7 +438,7 @@ public class UserService {
         Bson update = push("sensors", embeddedSensorDocument);
         collection.updateOne(filter, update);
 
-        return "Sensor added";
+        return sensorDocument.toJson();
     }
 
     // Descrizione:
@@ -419,14 +462,16 @@ public class UserService {
         Bson filter = Filters.and(buildingFilter, adminFilter);
         Document foundBuilding = collection.find(filter).first();
         if (foundBuilding == null) {
-            return "Building does not exist or user is not admin";
+            Document notFoundBuilding = new Document("error", "Building does not exist or user is not admin");
+            return notFoundBuilding.toJson();
         }
 
         // Controlla che il sensore esista e che sia nel building
         Bson sensorFilter = elemMatch("sensors", Filters.eq("id", sensorId));
         Document foundSensor = collection.find(sensorFilter).first();
         if (foundSensor == null) {
-            return "Sensor does not exist or is not in building";
+            Document notFoundSensor = new Document("error", "Sensor does not exist or is not in building"); 
+            return notFoundSensor.toJson();
         }
 
         // Rimuovi il sensore dalla collection sensori
@@ -442,14 +487,16 @@ public class UserService {
         readingsCollection.deleteMany(filterReadings);
 
         // Rimuovi le rilevazioni del sensore
-        return "Sensor removed";
+        Document removedSensor = new Document("id", sensorId);
+        return removedSensor.toJson();
 
     }
 
     // Descrizione:
     //  Inserisce una lettura del sensore, l’username deve essere l'admin dell’edificio
     // Collections:
-    //  Buildings: controlla che l'edificio esista, che l'admin sia admin e che il sensore sia nell'edificio
+    //  Buildings: controlla che l'edificio esista, che l'admin sia admin
+    //  Sensors: controlla che il sensore sia nell'edificio e prende il tipo
     //  Readings: inserisce la lettura
     // Risposta:
     //  String: messaggio di conferma
@@ -458,6 +505,7 @@ public class UserService {
         // Accedi alle collections
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
+        MongoCollection<Document> sensorsCollection = database.getCollection(sensorsCollectionName);
 
         // Estrai informazioni
         Integer sensorId = request.getSensorId();
@@ -466,18 +514,27 @@ public class UserService {
         Long timestamp = request.getTimestamp();
         Float value1 = request.getValue1();
         Float value2 = request.getValue2();
-        String type = request.getType();
 
-        // Controlla che l'edificio esista, che l'admin sia admin e che il sensore sia nell'edificio
-        // NOTA metti un indice per velocizzare questa cosa
+        // Controlla che l'edificio esista, che l'admin sia admin
         Bson buildingFilter = Filters.eq("id", buildingId);
         Bson adminFilter = Filters.eq("admin", username);
-        Bson sensorFilter = elemMatch("sensors", Filters.eq("id", sensorId));
-        Bson filter = Filters.and(buildingFilter, adminFilter, sensorFilter);
+        Bson filter = Filters.and(buildingFilter, adminFilter);
         Document foundBuilding = collection.find(filter).first();
         if (foundBuilding == null) {
-            return "Building does not exist or user is not admin or sensor is not in building";
+            Document notFoundBuilding = new Document("error", "Building does not exist or user is not admin");
+            return notFoundBuilding.toJson();
         }
+
+        // Controlla che il sensore esista e che sia nel building
+        Bson sensorFilter = Filters.eq("id", sensorId);
+        buildingFilter = Filters.eq("buildingID", buildingId);
+        filter = Filters.and(sensorFilter, buildingFilter);
+        Document foundSensor = sensorsCollection.find(filter).first();
+        if (foundSensor == null) {
+            Document notFoundSensor = new Document("error", "Sensor does not exist or is not in building");
+            return notFoundSensor.toJson();
+        }
+
 
         // Aggiungi la lettura alla collection Readings, uso il tipo di sensore per decidere se aggiungere 
         // value1 e/o value2 e come chiamare i campi che li contengono
@@ -488,6 +545,7 @@ public class UserService {
             .append("timestamp", date);
         String redisKey = "reading:" + sensorId + ":last";
         String redisValue = null;
+        String type = foundSensor.getString("type");
 
         if (type.equals("PowerConsumption")) {
             readingDocument.append("consumption", value1);
@@ -521,12 +579,13 @@ public class UserService {
             redisValue = "Precipitation :: precipitationIntensity: " + value1 + ", precipitationProbability: " + value2;
         } 
         else {
-            return "Sensor type not supported";
+            Document notFoundSensor = new Document("error", "Sensor type not supported");
+            return notFoundSensor.toJson();
         }
         readingsCollection.insertOne(readingDocument);
         jedis.set(redisKey, redisValue);
 
-        return "Reading added successfully!";
+        return readingDocument.toJson();
 
     }
 
@@ -537,28 +596,31 @@ public class UserService {
     //  Readings: se serve ottiene le ultime letture dei sensori
     // Risposta:
     //  String: lista dei sensori
-    public String getUserSensors(String username) {
+    public String getUserSensors(String username, Integer buildingID) {
     
         // Ottieni la Collection
         MongoCollection<Document> collection = database.getCollection(buildingsCollection);
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
-        // Ottieni la lista dei sensori dell'utente
-        System.out.println(username);
-        Document buildingFilter = new Document("users", new Document("$in", List.of(username)));
-        List<Document> buildings = collection.find(
-            buildingFilter
-        ).into(new ArrayList<>());
-        if (buildings.isEmpty()) {
-            return "User has no buildings";
+        // Controlla che l'utente sia nel building
+        Bson buildingFilter = Filters.eq("id", buildingID);
+        Document userFilter = new Document("users", 
+            new Document("$in", Arrays.asList(username))
+        );
+        Document foundBuilding = collection.find(
+            Filters.and(buildingFilter, userFilter)
+        ).first();
+        if (foundBuilding == null) {
+            Document notFoundBuilding = new Document("error", "Building does not exist or user is not in building");
+            return notFoundBuilding.toJson();
         }
+
+        // Crea lista dei sensori
+        List<Document> sensors = foundBuilding.getList("sensors", Document.class);
         List<Integer> sensorIds = new ArrayList<>();
-        for (Document building : buildings) {
-            List<Document> sensors = building.getList("sensors", Document.class);
-            for (Document sensor : sensors) {
-                Integer sensorId = sensor.getInteger("id");
-                sensorIds.add(sensorId);
-            }
+        for (Document sensor : sensors) {
+            Integer sensorId = sensor.getInteger("id");
+            sensorIds.add(sensorId);
         }
 
         // Per ogni sensore ottieni l'ultima lettura
@@ -632,7 +694,8 @@ public class UserService {
             response += "Sensor id: " + id + ", last reading: " + reading + "\n";
         }
 
-        return response;
+        Document responseDocument = new Document("response", response);
+        return responseDocument.toJson();
     }
     
     // Helper Function

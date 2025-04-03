@@ -8,7 +8,6 @@ public class AddReadingRequest {
     private String username;
     private Float value1;
     private Float value2;
-    private String type;
 
     public Integer getSensorId() {
         return sensorId;
@@ -45,12 +44,6 @@ public class AddReadingRequest {
     }
     public void setValue2(Float value2) {
         this.value2 = value2;
-    }
-    public String getType() {
-        return type;
-    }
-    public void setType(String type) {
-        this.type = type;
     }
 
 }

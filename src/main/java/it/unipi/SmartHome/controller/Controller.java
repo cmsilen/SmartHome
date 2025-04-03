@@ -216,10 +216,12 @@ public class Controller {
     // Risposta:
     //  Sensor[]: lista dei sensori
     @GetMapping("/sensors")
-    public String getSensors(@RequestParam(value = "username", defaultValue = "") String username) {
+    public String getSensors(
+        @RequestParam(value = "username", defaultValue = "") String username,
+        @RequestParam(value = "buildingID", defaultValue = "") Integer buildingID
+    ) {
 
-
-        String response = userService.getUserSensors(username);
+        String response = userService.getUserSensors(username, buildingID);
         return response;
 
     }
@@ -403,7 +405,7 @@ public class Controller {
         if (response != null) {
             return response;
         }
-        
+
         // ha fatto MISS quindi aggiorna la cache
         response = userService.getMostHumidDay(buildingId, year, month).toJson();
         userService.setMostHumidDayCache(buildingId, year, month, response);

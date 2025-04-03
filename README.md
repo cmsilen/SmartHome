@@ -24,7 +24,7 @@ CON:
 verrebbe scritto solo da POST /building che e' un operazione velocissima che avviene molto poco quindi il rallentamento e' trascurabile
 PRO:
  velocizzerebbe DELETE /building perché deve controllare che l'edificio esista (filtra sull'id), ottimizzerebbe POST /building/user perché deve accedere al building dall'ID per aggiungere l'utente e controllare l'admin, ottimizzerebbe POST /building/sensor perché filtra su buildingID per controllare che l'utente sia admin e aggiungere il sensore, ottimizzerebbe DELETE /building/sensor perché filtra su buildingID per controllare che l'utente sia admin e rimuovere il sensore, ottimizzerebbe POST /reading perché filtra su buildingID per controllare che l'utente sia admin (questa e' la piu' importante perche' rappresenta il carico maggiore)
-##### sensors di Buildings:
+##### id di Sensors:
 CON:
 rallenterebbe la POST /building/sensor che e' un'operazione veloce e che non avviene molto spesso
 PRO:
@@ -90,12 +90,11 @@ Non mi sembra veramente necessario
 
 ### DA FARE:
 1. Deployment su Cluster locale, quindi gestire le repliche sia per mongoDB che per Redis (bisogna avere almeno tre repliche per mongoDB e valurare per entrambi l'eventual consistency) e valutare se implementare lo sharding (quindi pensiamo una possibile soluzione di sharding poi l'analizziamo e valutiamo se vale la pena implementarla o meno) 
-[Fatto tutto bisogna solo argomentare MongoDB Sharding e Repliche Redis]
+[Fatto tutto bisogna solo argomentare MongoDB Sharding e fare Repliche ed Eviction Redis]
 2. Deployment sulla Macchina Virtuale (bisogna sentire il Ducange)
 3. Indici, bisogna discuterne e poi fare delle prove con e senza (immagino basti far vedere dei dati che abbiamo ricavato e magari gli script che abbiamo usato per ottenerli)
-4. Rivedere la Design Section leggendo bene cosa e' scritto nella consegna
-5. Pensare ai test da fare sull'API durante la presentazione (quindi quale API chiamare, che test fare con POSTMAN e cose varie)
-6. Scrivere la Documentazione seguendo la consegna 
-7. Fare degli unit test da fargli vedere (tipo codice python che registra l'utente e poi lo fa loggare)
-8. Fare statistiche sulle varie operazioni nel DB 
+4. Pensare ai test da fare sull'API durante la presentazione (quindi quale API chiamare, che test fare con POSTMAN e cose varie)
+5. Scrivere la Documentazione seguendo la consegna 
+6. Fare degli unit test da fargli vedere (tipo codice python che registra l'utente e poi lo fa loggare)
+7. Fare statistiche sulle varie operazioni nel DB 
 
