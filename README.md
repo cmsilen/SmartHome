@@ -30,6 +30,75 @@ rallenterebbe la POST /building/sensor che e' un'operazione veloce e che non avv
 PRO:
 ottimizzerebbe la POST /reading che controlla che il sensore sia nel building (verifica che l'id sia in sensors) (questa e' l'operazione piu' importante perche' rappresenta il carico maggiore)
 
+### Test durante la presentazione
+Durante la presentazione sara' necessario fare dei test per far vedere che l'applicazione funzioni, sicuramente andranno usati gli unit test in un database vuoto per garantire il funzionamento corretto della maggior parte delle API poi andranno fatti dei test su GET /sensors che e' un operazione abbastanza pesante che sfrutta il KV come cache, lo stesso discorso vale per GET /buildings sebbene meno pesante come operazione e per tutte le analytics, ossia GET /statistics/\<analytics_name\>
+
+##### GET /sensors
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/sensors?username=AlexSmith13&buildingID=25' \
+  -H 'accept: */*'
+curl -X 'GET' \
+  'http://localhost:8080/sensors?username=EmmaWilliams17&buildingID=14' \
+  -H 'accept: */*'
+curl -X 'GET' \
+  'http://localhost:8080/sensors?username=JohnJones19&buildingID=12' \
+  -H 'accept: */*'
+```
+
+##### GET /buildings
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/buildings?username=JohnMiller1' \
+  -H 'accept: */*'
+curl -X 'GET' \
+  'http://localhost:8080/sensors?username=EmmaWilliams17' \
+  -H 'accept: */*'
+curl -X 'GET' \
+  'http://localhost:8080/sensors?username=JohnJHernandez6' \
+  -H 'accept: */*'
+```
+##### GET /statistics/top5powerconsumtpion
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/statistics/top5powerconsumption?buildingID=20&year=2016&month=2&day=1' \
+  -H 'accept: */*'
+```
+##### GET /statistics/rainydays
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/statistics/rainydays?buildingID=20&year=2016&month=2' \
+  -H 'accept: */*'
+```
+##### GET /statistics/powerfromsolarpanels
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/statistics/powerfromsolarpanels?buildingID=2&year=2016&month=6' \
+  -H 'accept: */*'
+```
+##### GET /statistics/peaktemperature
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/statistics/peaktemperature?buildingID=20&year=2016&month=2&day=1' \
+  -H 'accept: */*'
+```
+##### GET /statistics/peakpowerconsumptionhours
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/statistics/peakpowerconsumptionhours?buildingID=20&year=2016&month=2&day=3' \
+  -H 'accept: */*'
+```
+##### GET /statistics/mosthumidday
+```bash
+curl -X 'GET' \
+  'http://localhost:8080/statistics/mosthumidday?buildingID=20&year=2016&month=2' \
+  -H 'accept: */*'
+```
+Poi occorre svolgere dei test in cui si fa vedere che il database riesce a reggere delle scritture simultanee da tutti i sensori mentre si svolgono anche altre richieste. 
+Le scritture simultanee e cadenzate vengono gestite con uno script in python che legge un file JSON con le letture di ogni sensore e le manda facendo una POST a /reading, poi si addormenta per 2 minuti (anche se dovrebbero essere 10) e rimanda le stesse letture ciclicamente.
+Quando il server e' sotto sforzo si svolgeranno le richieste "di routine" a mano, per semplicita' possiamo prenderne alcune tra le precedenti.
+
+
 ### Repliche MongoDB
 Esistono tre repliche di cui un master e due slave e un ulteriore server arbiter che serve per evitare tie break nella decisione di un nuovo master quando il precedente e' morto.
 Le repliche hanno priorita' diversa (serve a decidere chi diventa master)
@@ -82,13 +151,14 @@ MongoClientSettings mcs = MongoClientSettings.builder()
     .build();
 ```
 ### MongoDB sharding
-Si puo' fare uno sharding di Readings sull'id del building
+Si puo' fare uno sharding di Readings usando buildingID come partition key poiché è l'unico modo per distribuire il carico di scritture dovute alle letture dei sensori. Oltretutto, la partition key dovra' essere hashata e per agevolare la scalabilita' orizzontale abbiamo deciso di usare il consistent hashing.
 
 ### Eviction Policy Redis
 Si setta in questo modo
 ```bash
-CONFIG SET maxmemory-policy allkeys-lru
+CONFIG SET maxmemory-policy allkeys-lfu
 ```
+Abbiamo scelta questa configurazione poiche' non riteniamo ci siano chiavi che hanno un'importanza maggiore rispetto ad altre e nessuna di esse risulta essere critica ai fini della corretta esecuzione dell'applicativo, basti pensare che le analytics (carico maggiore dell'applicazione) eseguene in circa una decina di millisecondi.
 
 ### Repliche Redis
 

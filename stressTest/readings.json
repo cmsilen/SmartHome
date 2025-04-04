@@ -1,0 +1,2884 @@
+[{
+  "buildingId": 0,
+  "value1": 0.0207,
+  "sensorId": 1
+},
+{
+  "buildingId": 0,
+  "value1": 0.0000333,
+  "sensorId": 0
+},
+{
+  "buildingId": 0,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 19
+},
+{
+  "buildingId": 0,
+  "sensorId": 18,
+  "value1": 282,
+  "value2": 9.18
+},
+{
+  "buildingId": 0,
+  "value1": 1016.91,
+  "sensorId": 17
+},
+{
+  "value1": 29.26,
+  "buildingId": 0,
+  "value2": 0.62,
+  "sensorId": 16
+},
+{
+  "buildingId": 0,
+  "sensorId": 15,
+  "value1": 36.14
+},
+{
+  "buildingId": 0,
+  "value1": 0.003483333,
+  "sensorId": 14
+},
+{
+  "buildingId": 0,
+  "value1": 0.001516667,
+  "sensorId": 13
+},
+{
+  "buildingId": 0,
+  "value1": 0.004066667,
+  "sensorId": 12
+},
+{
+  "buildingId": 0,
+  "value1": 0.001016667,
+  "sensorId": 11
+},
+{
+  "buildingId": 0,
+  "value1": 0,
+  "sensorId": 9
+},
+{
+  "buildingId": 0,
+  "value1": 0.00015,
+  "sensorId": 8
+},
+{
+  "buildingId": 0,
+  "value1": 0.000416667,
+  "sensorId": 7
+},
+{
+  "buildingId": 0,
+  "value1": 0.013083333,
+  "sensorId": 6
+},
+{
+  "buildingId": 0,
+  "value1": 0.006983333,
+  "sensorId": 5
+},
+{
+  "buildingId": 0,
+  "value1": 0.12415,
+  "sensorId": 4
+},
+{
+  "buildingId": 0,
+  "value1": 0.442633333,
+  "sensorId": 3
+},
+{
+  "buildingId": 0,
+  "value1": 0.061916667,
+  "sensorId": 2
+},
+{
+  "buildingId": 0,
+  "value1": 0.03135,
+  "sensorId": 10
+},
+{
+  "buildingId": 1,
+  "value1": 0.019976555583668693,
+  "sensorId": 21
+},
+{
+  "buildingId": 1,
+  "value1": 0.000283442553296279,
+  "sensorId": 20
+},
+{
+  "buildingId": 1,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 39
+},
+{
+  "buildingId": 1,
+  "sensorId": 38,
+  "value1": 235.62723180736918,
+  "value2": 4.870286716018426
+},
+{
+  "buildingId": 1,
+  "value1": 999.749584462681,
+  "sensorId": 37
+},
+{
+  "value1": 10.233517431633858,
+  "buildingId": 1,
+  "value2": 0.5915327995164079,
+  "sensorId": 36
+},
+{
+  "buildingId": 1,
+  "sensorId": 35,
+  "value1": 17.479794225709856
+},
+{
+  "buildingId": 1,
+  "value1": 0.39299138802754424,
+  "sensorId": 34
+},
+{
+  "buildingId": 1,
+  "value1": 0.0014213221941340355,
+  "sensorId": 33
+},
+{
+  "buildingId": 1,
+  "value1": 0.004116082150163005,
+  "sensorId": 32
+},
+{
+  "buildingId": 1,
+  "value1": 0.0009735641527320884,
+  "sensorId": 31
+},
+{
+  "buildingId": 1,
+  "value1": 0.000024622552779870484,
+  "sensorId": 29
+},
+{
+  "buildingId": 1,
+  "value1": 0.00001646432958654002,
+  "sensorId": 28
+},
+{
+  "buildingId": 1,
+  "value1": 0.0006531507994660338,
+  "sensorId": 27
+},
+{
+  "buildingId": 1,
+  "value1": 0.012660445138473789,
+  "sensorId": 26
+},
+{
+  "buildingId": 1,
+  "value1": 0.006552046999347547,
+  "sensorId": 25
+},
+{
+  "buildingId": 1,
+  "value1": 0.005040352642351393,
+  "sensorId": 24
+},
+{
+  "buildingId": 1,
+  "value1": 0.03915618536328489,
+  "sensorId": 23
+},
+{
+  "buildingId": 1,
+  "value1": 0.07919556123760776,
+  "sensorId": 22
+},
+{
+  "buildingId": 1,
+  "value1": 0.02656557338298602,
+  "sensorId": 30
+},
+{
+  "buildingId": 2,
+  "value1": 0.022284508990166218,
+  "sensorId": 41
+},
+{
+  "buildingId": 2,
+  "value1": 0.00027788424374216306,
+  "sensorId": 40
+},
+{
+  "buildingId": 2,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 59
+},
+{
+  "buildingId": 2,
+  "sensorId": 58,
+  "value1": 204.37924741085064,
+  "value2": 9.56279741832875
+},
+{
+  "buildingId": 2,
+  "value1": 1087.878463560472,
+  "sensorId": 57
+},
+{
+  "value1": 39.45595155278948,
+  "buildingId": 2,
+  "value2": 0.7099489646903233,
+  "sensorId": 56
+},
+{
+  "buildingId": 2,
+  "sensorId": 55,
+  "value1": 45.24311129526515
+},
+{
+  "buildingId": 2,
+  "value1": 0.0033704644233030676,
+  "sensorId": 54
+},
+{
+  "buildingId": 2,
+  "value1": 0.0017300520427686087,
+  "sensorId": 53
+},
+{
+  "buildingId": 2,
+  "value1": 0.004284793173244366,
+  "sensorId": 52
+},
+{
+  "buildingId": 2,
+  "value1": 0.001048788243292523,
+  "sensorId": 51
+},
+{
+  "buildingId": 2,
+  "value1": 0,
+  "sensorId": 49
+},
+{
+  "buildingId": 2,
+  "value1": 0.00000898193008358212,
+  "sensorId": 48
+},
+{
+  "buildingId": 2,
+  "value1": 0.000752976174671555,
+  "sensorId": 47
+},
+{
+  "buildingId": 2,
+  "value1": 0.014145195281329926,
+  "sensorId": 46
+},
+{
+  "buildingId": 2,
+  "value1": 0.007933141840289596,
+  "sensorId": 45
+},
+{
+  "buildingId": 2,
+  "value1": 0.005530789103724118,
+  "sensorId": 44
+},
+{
+  "buildingId": 2,
+  "value1": 0.04513375064917623,
+  "sensorId": 43
+},
+{
+  "buildingId": 2,
+  "value1": 0.08434229574457364,
+  "sensorId": 42
+},
+{
+  "buildingId": 2,
+  "value1": 0.033928747691337045,
+  "sensorId": 50
+},
+{
+  "buildingId": 3,
+  "value1": 0.019787593388527175,
+  "sensorId": 61
+},
+{
+  "buildingId": 3,
+  "value1": 0.000004116082396635005,
+  "sensorId": 60
+},
+{
+  "buildingId": 3,
+  "value1": 0.0082,
+  "value2": 0.42,
+  "sensorId": 79
+},
+{
+  "buildingId": 3,
+  "sensorId": 78,
+  "value1": 14.7883199879102,
+  "value2": 8.025128313439268
+},
+{
+  "buildingId": 3,
+  "value1": 994.5440958269367,
+  "sensorId": 77
+},
+{
+  "value1": 12.816543989522172,
+  "buildingId": 3,
+  "value2": 0.8380047993149112,
+  "sensorId": 76
+},
+{
+  "buildingId": 3,
+  "sensorId": 75,
+  "value1": 22.044455661978137
+},
+{
+  "buildingId": 3,
+  "value1": 0.41991434581023807,
+  "sensorId": 74
+},
+{
+  "buildingId": 3,
+  "value1": 0.0014213221941340355,
+  "sensorId": 73
+},
+{
+  "buildingId": 3,
+  "value1": 0.003947659945596695,
+  "sensorId": 72
+},
+{
+  "buildingId": 3,
+  "value1": 0.0009858879991940133,
+  "sensorId": 71
+},
+{
+  "buildingId": 3,
+  "value1": 0.000012348247189905015,
+  "sensorId": 69
+},
+{
+  "buildingId": 3,
+  "value1": 0.000041062235166430655,
+  "sensorId": 68
+},
+{
+  "buildingId": 3,
+  "value1": 0.0006572589947586753,
+  "sensorId": 67
+},
+{
+  "buildingId": 3,
+  "value1": 0.012660445138473789,
+  "sensorId": 66
+},
+{
+  "buildingId": 3,
+  "value1": 0.09816979776621586,
+  "sensorId": 65
+},
+{
+  "buildingId": 3,
+  "value1": 0.004933547944790708,
+  "sensorId": 64
+},
+{
+  "buildingId": 3,
+  "value1": 0.03944373586540181,
+  "sensorId": 63
+},
+{
+  "buildingId": 3,
+  "value1": 0.06777569199576777,
+  "sensorId": 62
+},
+{
+  "buildingId": 3,
+  "value1": 0.029523237873512055,
+  "sensorId": 70
+},
+{
+  "buildingId": 4,
+  "value1": 0.5185,
+  "sensorId": 81
+},
+{
+  "buildingId": 4,
+  "value1": 0.00005,
+  "sensorId": 80
+},
+{
+  "buildingId": 4,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 99
+},
+{
+  "buildingId": 4,
+  "sensorId": 98,
+  "value1": 317,
+  "value2": 10.04
+},
+{
+  "buildingId": 4,
+  "value1": 1012.55,
+  "sensorId": 97
+},
+{
+  "value1": 42.92,
+  "buildingId": 4,
+  "value2": 0.5,
+  "sensorId": 96
+},
+{
+  "buildingId": 4,
+  "sensorId": 95,
+  "value1": 47.5
+},
+{
+  "buildingId": 4,
+  "value1": 0.003033333,
+  "sensorId": 94
+},
+{
+  "buildingId": 4,
+  "value1": 0.001683333,
+  "sensorId": 93
+},
+{
+  "buildingId": 4,
+  "value1": 0.004,
+  "sensorId": 92
+},
+{
+  "buildingId": 4,
+  "value1": 0.001,
+  "sensorId": 91
+},
+{
+  "buildingId": 4,
+  "value1": 0.0000167,
+  "sensorId": 89
+},
+{
+  "buildingId": 4,
+  "value1": 0.0000167,
+  "sensorId": 88
+},
+{
+  "buildingId": 4,
+  "value1": 0.000716667,
+  "sensorId": 87
+},
+{
+  "buildingId": 4,
+  "value1": 0.012766667,
+  "sensorId": 86
+},
+{
+  "buildingId": 4,
+  "value1": 0.006883333,
+  "sensorId": 85
+},
+{
+  "buildingId": 4,
+  "value1": 0.00505,
+  "sensorId": 84
+},
+{
+  "buildingId": 4,
+  "value1": 0.041683333,
+  "sensorId": 83
+},
+{
+  "buildingId": 4,
+  "value1": 0.631233333,
+  "sensorId": 82
+},
+{
+  "buildingId": 4,
+  "value1": 0.038633333,
+  "sensorId": 90
+},
+{
+  "buildingId": 5,
+  "value1": 0.010454520493805183,
+  "sensorId": 101
+},
+{
+  "buildingId": 5,
+  "value1": 0.00004108688236641051,
+  "sensorId": 100
+},
+{
+  "buildingId": 5,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 119
+},
+{
+  "buildingId": 5,
+  "sensorId": 118,
+  "value1": 308.5829437477262,
+  "value2": 5.92518687515602
+},
+{
+  "buildingId": 5,
+  "value1": 1006.3057396573213,
+  "sensorId": 117
+},
+{
+  "value1": 29.15270813616697,
+  "buildingId": 5,
+  "value2": 0.24647199979850332,
+  "sensorId": 116
+},
+{
+  "buildingId": 5,
+  "sensorId": 115,
+  "value1": 34.318761251943606
+},
+{
+  "buildingId": 5,
+  "value1": 0.504852705382567,
+  "sensorId": 114
+},
+{
+  "buildingId": 5,
+  "value1": 0.0011789574037401743,
+  "sensorId": 113
+},
+{
+  "buildingId": 5,
+  "value1": 0.003939444047955412,
+  "sensorId": 112
+},
+{
+  "buildingId": 5,
+  "value1": 0.0009037305016131789,
+  "sensorId": 111
+},
+{
+  "buildingId": 5,
+  "value1": 0.000008207517593290159,
+  "sensorId": 109
+},
+{
+  "buildingId": 5,
+  "value1": 0.00016431450221766902,
+  "sensorId": 108
+},
+{
+  "buildingId": 5,
+  "value1": 0.0001848537533768777,
+  "sensorId": 107
+},
+{
+  "buildingId": 5,
+  "value1": 0.012902809189451648,
+  "sensorId": 106
+},
+{
+  "buildingId": 5,
+  "value1": 0.006749225092130349,
+  "sensorId": 105
+},
+{
+  "buildingId": 5,
+  "value1": 0.18849356979472603,
+  "sensorId": 104
+},
+{
+  "buildingId": 5,
+  "value1": 0.04038032946463613,
+  "sensorId": 103
+},
+{
+  "buildingId": 5,
+  "value1": 0.18816083234852604,
+  "sensorId": 102
+},
+{
+  "buildingId": 5,
+  "value1": 0.030246222324097,
+  "sensorId": 110
+},
+{
+  "buildingId": 6,
+  "value1": 0.06815330745129507,
+  "sensorId": 121
+},
+{
+  "buildingId": 6,
+  "value1": 0.00000898193008358212,
+  "sensorId": 120
+},
+{
+  "buildingId": 6,
+  "value1": 0.0034,
+  "value2": 0.12,
+  "sensorId": 139
+},
+{
+  "buildingId": 6,
+  "sensorId": 138,
+  "value1": 304.41751061721436,
+  "value2": 16.94196393010999
+},
+{
+  "buildingId": 6,
+  "value1": 1082.951848017621,
+  "sensorId": 137
+},
+{
+  "value1": 44.27499907068743,
+  "buildingId": 6,
+  "value2": 0.5593537297560123,
+  "sensorId": 136
+},
+{
+  "buildingId": 6,
+  "sensorId": 135,
+  "value1": 51.0195142352455
+},
+{
+  "buildingId": 6,
+  "value1": 0.0037110968608812353,
+  "sensorId": 134
+},
+{
+  "buildingId": 6,
+  "value1": 0.0017748724117258082,
+  "sensorId": 133
+},
+{
+  "buildingId": 6,
+  "value1": 0.004401324841716786,
+  "sensorId": 132
+},
+{
+  "buildingId": 6,
+  "value1": 0.0010756802495307928,
+  "sensorId": 131
+},
+{
+  "buildingId": 6,
+  "value1": 0.00000898193008358212,
+  "sensorId": 129
+},
+{
+  "buildingId": 6,
+  "value1": 0.00000898193008358212,
+  "sensorId": 128
+},
+{
+  "buildingId": 6,
+  "value1": 0.0007440119933120902,
+  "sensorId": 127
+},
+{
+  "buildingId": 6,
+  "value1": 0.014010735250138576,
+  "sensorId": 126
+},
+{
+  "buildingId": 6,
+  "value1": 0.012334467219846507,
+  "sensorId": 125
+},
+{
+  "buildingId": 6,
+  "value1": 0.0056921411411537375,
+  "sensorId": 124
+},
+{
+  "buildingId": 6,
+  "value1": 0.044093926049403036,
+  "sensorId": 123
+},
+{
+  "buildingId": 6,
+  "value1": 0.10997934187100424,
+  "sensorId": 122
+},
+{
+  "buildingId": 6,
+  "value1": 0.03574844047202006,
+  "sensorId": 130
+},
+{
+  "buildingId": 7,
+  "value1": 0.06988302759404498,
+  "sensorId": 141
+},
+{
+  "buildingId": 7,
+  "value1": 0,
+  "sensorId": 140
+},
+{
+  "buildingId": 7,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 159
+},
+{
+  "buildingId": 7,
+  "sensorId": 158,
+  "value1": 207.0364798307428,
+  "value2": 19.747336623856086
+},
+{
+  "buildingId": 7,
+  "value1": 997.3637355046316,
+  "sensorId": 157
+},
+{
+  "value1": 65.18691450670816,
+  "buildingId": 7,
+  "value2": 0.4732262396131264,
+  "sensorId": 156
+},
+{
+  "buildingId": 7,
+  "sensorId": 155,
+  "value1": 65.18691450670816
+},
+{
+  "buildingId": 7,
+  "value1": 0.0420316918632861,
+  "sensorId": 154
+},
+{
+  "buildingId": 7,
+  "value1": 0.0011419870967143983,
+  "sensorId": 153
+},
+{
+  "buildingId": 7,
+  "value1": 0.0038490708992052936,
+  "sensorId": 152
+},
+{
+  "buildingId": 7,
+  "value1": 0.0008051417016937776,
+  "sensorId": 151
+},
+{
+  "buildingId": 7,
+  "value1": 0,
+  "sensorId": 149
+},
+{
+  "buildingId": 7,
+  "value1": 0.00002873863517650549,
+  "sensorId": 148
+},
+{
+  "buildingId": 7,
+  "value1": 0.0006695821018046009,
+  "sensorId": 147
+},
+{
+  "buildingId": 7,
+  "value1": 0.01273849419428998,
+  "sensorId": 146
+},
+{
+  "buildingId": 7,
+  "value1": 0.006934079091979226,
+  "sensorId": 145
+},
+{
+  "buildingId": 7,
+  "value1": 0.005299147749195821,
+  "sensorId": 144
+},
+{
+  "buildingId": 7,
+  "value1": 0.0386344857219434,
+  "sensorId": 143
+},
+{
+  "buildingId": 7,
+  "value1": 0.10150949311701359,
+  "sensorId": 142
+},
+{
+  "buildingId": 7,
+  "value1": 0.03259592172688006,
+  "sensorId": 150
+},
+{
+  "buildingId": 8,
+  "value1": 0.02085,
+  "sensorId": 161
+},
+{
+  "buildingId": 8,
+  "value1": 0,
+  "sensorId": 160
+},
+{
+  "buildingId": 8,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 179
+},
+{
+  "buildingId": 8,
+  "sensorId": 178,
+  "value1": 356,
+  "value2": 7.74
+},
+{
+  "buildingId": 8,
+  "value1": 1029.73,
+  "sensorId": 177
+},
+{
+  "value1": 41.59,
+  "buildingId": 8,
+  "value2": 0.45,
+  "sensorId": 176
+},
+{
+  "buildingId": 8,
+  "sensorId": 175,
+  "value1": 45.65
+},
+{
+  "buildingId": 8,
+  "value1": 0.003516667,
+  "sensorId": 174
+},
+{
+  "buildingId": 8,
+  "value1": 0.001633333,
+  "sensorId": 173
+},
+{
+  "buildingId": 8,
+  "value1": 0.004166667,
+  "sensorId": 172
+},
+{
+  "buildingId": 8,
+  "value1": 0.001,
+  "sensorId": 171
+},
+{
+  "buildingId": 8,
+  "value1": 0,
+  "sensorId": 169
+},
+{
+  "buildingId": 8,
+  "value1": 0.0000167,
+  "sensorId": 168
+},
+{
+  "buildingId": 8,
+  "value1": 0.000716667,
+  "sensorId": 167
+},
+{
+  "buildingId": 8,
+  "value1": 0.013233333,
+  "sensorId": 166
+},
+{
+  "buildingId": 8,
+  "value1": 0.023166667,
+  "sensorId": 165
+},
+{
+  "buildingId": 8,
+  "value1": 0.005133333,
+  "sensorId": 164
+},
+{
+  "buildingId": 8,
+  "value1": 0.042283333,
+  "sensorId": 163
+},
+{
+  "buildingId": 8,
+  "value1": 0.0622,
+  "sensorId": 162
+},
+{
+  "buildingId": 8,
+  "value1": 0.033283333,
+  "sensorId": 170
+},
+{
+  "buildingId": 9,
+  "value1": 0.019914937583719067,
+  "sensorId": 181
+},
+{
+  "buildingId": 9,
+  "value1": 0.00001646432958654002,
+  "sensorId": 180
+},
+{
+  "buildingId": 9,
+  "value1": 0.0365,
+  "value2": 0.68,
+  "sensorId": 199
+},
+{
+  "buildingId": 9,
+  "sensorId": 198,
+  "value1": 85.77225592987915,
+  "value2": 6.487143034696607
+},
+{
+  "buildingId": 9,
+  "value1": 994.0708695873235,
+  "sensorId": 197
+},
+{
+  "value1": 38.63695068841338,
+  "buildingId": 9,
+  "value2": 0.6901215994358092,
+  "sensorId": 196
+},
+{
+  "buildingId": 9,
+  "sensorId": 195,
+  "value1": 42.56078492520555
+},
+{
+  "buildingId": 9,
+  "value1": 0.16028074122249472,
+  "sensorId": 194
+},
+{
+  "buildingId": 9,
+  "value1": 0.0015650969522484964,
+  "sensorId": 193
+},
+{
+  "buildingId": 9,
+  "value1": 0.00393533634560677,
+  "sensorId": 192
+},
+{
+  "buildingId": 9,
+  "value1": 0.0009612405527421633,
+  "sensorId": 191
+},
+{
+  "buildingId": 9,
+  "value1": 0,
+  "sensorId": 189
+},
+{
+  "buildingId": 9,
+  "value1": 0.00001646432958654002,
+  "sensorId": 188
+},
+{
+  "buildingId": 9,
+  "value1": 0.000706553394718376,
+  "sensorId": 187
+},
+{
+  "buildingId": 9,
+  "value1": 0.01273849468723398,
+  "sensorId": 186
+},
+{
+  "buildingId": 9,
+  "value1": 0.006966941696656361,
+  "sensorId": 185
+},
+{
+  "buildingId": 9,
+  "value1": 0.005064999349387244,
+  "sensorId": 184
+},
+{
+  "buildingId": 9,
+  "value1": 0.03887684977292126,
+  "sensorId": 183
+},
+{
+  "buildingId": 9,
+  "value1": 0.06519184394670412,
+  "sensorId": 182
+},
+{
+  "buildingId": 9,
+  "value1": 0.03175791717403715,
+  "sensorId": 190
+},
+{
+  "buildingId": 10,
+  "value1": 0.02198869692154525,
+  "sensorId": 201
+},
+{
+  "buildingId": 10,
+  "value1": 0.00000898193008358212,
+  "sensorId": 200
+},
+{
+  "buildingId": 10,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 219
+},
+{
+  "buildingId": 10,
+  "sensorId": 218,
+  "value1": 280.7525451275369,
+  "value2": 6.59391992962376
+},
+{
+  "buildingId": 10,
+  "value1": 1090.6106913942801,
+  "sensorId": 217
+},
+{
+  "value1": 45.867005839993006,
+  "buildingId": 10,
+  "value2": 0.7207057671856312,
+  "sensorId": 216
+},
+{
+  "buildingId": 10,
+  "sensorId": 215,
+  "value1": 49.30918263849155
+},
+{
+  "buildingId": 10,
+  "value1": 0.0036752406732835003,
+  "sensorId": 214
+},
+{
+  "buildingId": 10,
+  "value1": 0.001954152811874357,
+  "sensorId": 213
+},
+{
+  "buildingId": 10,
+  "value1": 0.004517857048029331,
+  "sensorId": 212
+},
+{
+  "buildingId": 10,
+  "value1": 0.0010756802495307928,
+  "sensorId": 211
+},
+{
+  "buildingId": 10,
+  "value1": 0.00000898193008358212,
+  "sensorId": 209
+},
+{
+  "buildingId": 10,
+  "value1": 0.00000898193008358212,
+  "sensorId": 208
+},
+{
+  "buildingId": 10,
+  "value1": 0.000752976174671555,
+  "sensorId": 207
+},
+{
+  "buildingId": 10,
+  "value1": 0.014064519262615116,
+  "sensorId": 206
+},
+{
+  "buildingId": 10,
+  "value1": 0.007404265896883666,
+  "sensorId": 205
+},
+{
+  "buildingId": 10,
+  "value1": 0.005548717466443048,
+  "sensorId": 204
+},
+{
+  "buildingId": 10,
+  "value1": 0.04505307409262129,
+  "sensorId": 203
+},
+{
+  "buildingId": 10,
+  "value1": 0.08490702733773715,
+  "sensorId": 202
+},
+{
+  "buildingId": 10,
+  "value1": 0.036080108190398634,
+  "sensorId": 210
+},
+{
+  "buildingId": 11,
+  "value1": 0.020198380137015345,
+  "sensorId": 221
+},
+{
+  "buildingId": 11,
+  "value1": 0,
+  "sensorId": 220
+},
+{
+  "buildingId": 11,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 239
+},
+{
+  "buildingId": 11,
+  "sensorId": 238,
+  "value1": 349.9902397138747,
+  "value2": 2.5140143979447336
+},
+{
+  "buildingId": 11,
+  "value1": 995.7370203059614,
+  "sensorId": 237
+},
+{
+  "value1": 51.58166011783077,
+  "buildingId": 11,
+  "value2": 0.7887103993552107,
+  "sensorId": 236
+},
+{
+  "buildingId": 11,
+  "sensorId": 235,
+  "value1": 51.58166011783077
+},
+{
+  "buildingId": 11,
+  "value1": 0.3388455976206337,
+  "sensorId": 234
+},
+{
+  "buildingId": 11,
+  "value1": 0.0054429232467262815,
+  "sensorId": 233
+},
+{
+  "buildingId": 11,
+  "value1": 0.004054464643157379,
+  "sensorId": 232
+},
+{
+  "buildingId": 11,
+  "value1": 0.0009858879991940133,
+  "sensorId": 231
+},
+{
+  "buildingId": 11,
+  "value1": 0.000012323599989925167,
+  "sensorId": 229
+},
+{
+  "buildingId": 11,
+  "value1": 0.00001646432958654002,
+  "sensorId": 228
+},
+{
+  "buildingId": 11,
+  "value1": 0.000694229548256451,
+  "sensorId": 227
+},
+{
+  "buildingId": 11,
+  "value1": 0.012882270184764441,
+  "sensorId": 226
+},
+{
+  "buildingId": 11,
+  "value1": 0.006765656394468917,
+  "sensorId": 225
+},
+{
+  "buildingId": 11,
+  "value1": 0.005077323195849168,
+  "sensorId": 224
+},
+{
+  "buildingId": 11,
+  "value1": 0.0717356752948824,
+  "sensorId": 223
+},
+{
+  "buildingId": 11,
+  "value1": 0.06593947559726893,
+  "sensorId": 222
+},
+{
+  "buildingId": 11,
+  "value1": 0.061038790503627344,
+  "sensorId": 230
+},
+{
+  "buildingId": 12,
+  "value1": 0.020483333,
+  "sensorId": 241
+},
+{
+  "buildingId": 12,
+  "value1": 0,
+  "sensorId": 240
+},
+{
+  "buildingId": 12,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 259
+},
+{
+  "buildingId": 12,
+  "sensorId": 258,
+  "value1": 244,
+  "value2": 2.21
+},
+{
+  "buildingId": 12,
+  "value1": 1015.58,
+  "sensorId": 257
+},
+{
+  "value1": 61.38,
+  "buildingId": 12,
+  "value2": 0.94,
+  "sensorId": 256
+},
+{
+  "buildingId": 12,
+  "sensorId": 255,
+  "value1": 61.38
+},
+{
+  "buildingId": 12,
+  "value1": 0.003533333,
+  "sensorId": 254
+},
+{
+  "buildingId": 12,
+  "value1": 0.000983333,
+  "sensorId": 253
+},
+{
+  "buildingId": 12,
+  "value1": 0.0042,
+  "sensorId": 252
+},
+{
+  "buildingId": 12,
+  "value1": 0.000983333,
+  "sensorId": 251
+},
+{
+  "buildingId": 12,
+  "value1": 0.0000167,
+  "sensorId": 249
+},
+{
+  "buildingId": 12,
+  "value1": 0,
+  "sensorId": 248
+},
+{
+  "buildingId": 12,
+  "value1": 0.000766667,
+  "sensorId": 247
+},
+{
+  "buildingId": 12,
+  "value1": 0.013066667,
+  "sensorId": 246
+},
+{
+  "buildingId": 12,
+  "value1": 0.004883333,
+  "sensorId": 245
+},
+{
+  "buildingId": 12,
+  "value1": 0.005233333,
+  "sensorId": 244
+},
+{
+  "buildingId": 12,
+  "value1": 0.0293,
+  "sensorId": 243
+},
+{
+  "buildingId": 12,
+  "value1": 0.065633333,
+  "sensorId": 242
+},
+{
+  "buildingId": 12,
+  "value1": 0.031483333,
+  "sensorId": 250
+},
+{
+  "buildingId": 13,
+  "value1": 0.02003406588126968,
+  "sensorId": 261
+},
+{
+  "buildingId": 13,
+  "value1": 0.000283442553296279,
+  "sensorId": 260
+},
+{
+  "buildingId": 13,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 279
+},
+{
+  "buildingId": 13,
+  "sensorId": 278,
+  "value1": 16.760095986298225,
+  "value2": 6.63502623457571
+},
+{
+  "buildingId": 13,
+  "value1": 994.7905678267352,
+  "sensorId": 277
+},
+{
+  "value1": 61.815177549464636,
+  "buildingId": 13,
+  "value2": 0.6802627194438691,
+  "sensorId": 276
+},
+{
+  "buildingId": 13,
+  "sensorId": 275,
+  "value1": 61.815177549464636
+},
+{
+  "buildingId": 13,
+  "value1": 0.0004231105949500971,
+  "sensorId": 274
+},
+{
+  "buildingId": 13,
+  "value1": 0.001474724296442378,
+  "sensorId": 273
+},
+{
+  "buildingId": 13,
+  "value1": 0.004116082396635005,
+  "sensorId": 272
+},
+{
+  "buildingId": 13,
+  "value1": 0.0009817800503733717,
+  "sensorId": 271
+},
+{
+  "buildingId": 13,
+  "value1": 0.00001646432958654002,
+  "sensorId": 269
+},
+{
+  "buildingId": 13,
+  "value1": 0.00001646432958654002,
+  "sensorId": 268
+},
+{
+  "buildingId": 13,
+  "value1": 0.0007353078041028685,
+  "sensorId": 267
+},
+{
+  "buildingId": 13,
+  "value1": 0.012841191435974024,
+  "sensorId": 266
+},
+{
+  "buildingId": 13,
+  "value1": 0.006667067594549514,
+  "sensorId": 265
+},
+{
+  "buildingId": 13,
+  "value1": 0.0051635881493066445,
+  "sensorId": 264
+},
+{
+  "buildingId": 13,
+  "value1": 0.039394441218970115,
+  "sensorId": 263
+},
+{
+  "buildingId": 13,
+  "value1": 0.06366782574324606,
+  "sensorId": 262
+},
+{
+  "buildingId": 13,
+  "value1": 0.03167986737880496,
+  "sensorId": 270
+},
+{
+  "buildingId": 14,
+  "value1": 0.022347257184002222,
+  "sensorId": 281
+},
+{
+  "buildingId": 14,
+  "value1": 0.00000898193008358212,
+  "sensorId": 280
+},
+{
+  "buildingId": 14,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 299
+},
+{
+  "buildingId": 14,
+  "sensorId": 298,
+  "value1": 344.2176798498537,
+  "value2": 5.120237987766574
+},
+{
+  "buildingId": 14,
+  "value1": 1089.803931207132,
+  "sensorId": 297
+},
+{
+  "value1": 70.53235396173407,
+  "buildingId": 14,
+  "value2": 0.7852465821574788,
+  "sensorId": 296
+},
+{
+  "buildingId": 14,
+  "sensorId": 295,
+  "value1": 70.53235396173407
+},
+{
+  "buildingId": 14,
+  "value1": 0.003406321148740927,
+  "sensorId": 294
+},
+{
+  "buildingId": 14,
+  "value1": 0.0017748724117258082,
+  "sensorId": 293
+},
+{
+  "buildingId": 14,
+  "value1": 0.004266864810525437,
+  "sensorId": 292
+},
+{
+  "buildingId": 14,
+  "value1": 0.0010756802495307928,
+  "sensorId": 291
+},
+{
+  "buildingId": 14,
+  "value1": 0,
+  "sensorId": 289
+},
+{
+  "buildingId": 14,
+  "value1": 0.00005378401247653964,
+  "sensorId": 288
+},
+{
+  "buildingId": 14,
+  "value1": 0.0005736963123631311,
+  "sensorId": 287
+},
+{
+  "buildingId": 14,
+  "value1": 0.01421690711868527,
+  "sensorId": 286
+},
+{
+  "buildingId": 14,
+  "value1": 0.00884747005239077,
+  "sensorId": 285
+},
+{
+  "buildingId": 14,
+  "value1": 0.13616319176571956,
+  "sensorId": 284
+},
+{
+  "buildingId": 14,
+  "value1": 0.045339922517722925,
+  "sensorId": 283
+},
+{
+  "buildingId": 14,
+  "value1": 0.07172098063746561,
+  "sensorId": 282
+},
+{
+  "buildingId": 14,
+  "value1": 0.03436798397250883,
+  "sensorId": 290
+},
+{
+  "buildingId": 15,
+  "value1": 0.017930837738869117,
+  "sensorId": 301
+},
+{
+  "buildingId": 15,
+  "value1": 1.1581472800996593,
+  "sensorId": 300
+},
+{
+  "buildingId": 15,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 319
+},
+{
+  "buildingId": 15,
+  "sensorId": 318,
+  "value1": 184.3610558492805,
+  "value2": 6.319542074833625
+},
+{
+  "buildingId": 15,
+  "value1": 1003.2396279798279,
+  "sensorId": 317
+},
+{
+  "value1": 68.63752250388721,
+  "buildingId": 15,
+  "value2": 0.6802627194438691,
+  "sensorId": 316
+},
+{
+  "buildingId": 15,
+  "sensorId": 315,
+  "value1": 68.63752250388721
+},
+{
+  "buildingId": 15,
+  "value1": 0.27974161157600863,
+  "sensorId": 314
+},
+{
+  "buildingId": 15,
+  "value1": 0.0016636859986398974,
+  "sensorId": 313
+},
+{
+  "buildingId": 15,
+  "value1": 0.004017493843187604,
+  "sensorId": 312
+},
+{
+  "buildingId": 15,
+  "value1": 0.0010064270038812222,
+  "sensorId": 311
+},
+{
+  "buildingId": 15,
+  "value1": 0.000004116082396635005,
+  "sensorId": 309
+},
+{
+  "buildingId": 15,
+  "value1": 0.0010023197944765798,
+  "sensorId": 308
+},
+{
+  "buildingId": 15,
+  "value1": 0.0008462204504841947,
+  "sensorId": 307
+},
+{
+  "buildingId": 15,
+  "value1": 0.01140343769302942,
+  "sensorId": 306
+},
+{
+  "buildingId": 15,
+  "value1": 0.13574856208431835,
+  "sensorId": 305
+},
+{
+  "buildingId": 15,
+  "value1": 0.004144837545435497,
+  "sensorId": 304
+},
+{
+  "buildingId": 15,
+  "value1": 0.06665013694080794,
+  "sensorId": 303
+},
+{
+  "buildingId": 15,
+  "value1": 0.08694710612421469,
+  "sensorId": 302
+},
+{
+  "buildingId": 15,
+  "value1": 0.028693448478894427,
+  "sensorId": 310
+},
+{
+  "buildingId": 16,
+  "value1": 0.019883333,
+  "sensorId": 321
+},
+{
+  "buildingId": 16,
+  "value1": 0.115133333,
+  "sensorId": 320
+},
+{
+  "buildingId": 16,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 339
+},
+{
+  "buildingId": 16,
+  "sensorId": 338,
+  "value1": 243,
+  "value2": 4.72
+},
+{
+  "buildingId": 16,
+  "value1": 1009.47,
+  "sensorId": 337
+},
+{
+  "value1": 68.56,
+  "buildingId": 16,
+  "value2": 0.9,
+  "sensorId": 336
+},
+{
+  "buildingId": 16,
+  "sensorId": 335,
+  "value1": 68.56
+},
+{
+  "buildingId": 16,
+  "value1": 0.003066667,
+  "sensorId": 334
+},
+{
+  "buildingId": 16,
+  "value1": 0.00165,
+  "sensorId": 333
+},
+{
+  "buildingId": 16,
+  "value1": 0.004,
+  "sensorId": 332
+},
+{
+  "buildingId": 16,
+  "value1": 0.001,
+  "sensorId": 331
+},
+{
+  "buildingId": 16,
+  "value1": 0.0000167,
+  "sensorId": 329
+},
+{
+  "buildingId": 16,
+  "value1": 0.000416667,
+  "sensorId": 328
+},
+{
+  "buildingId": 16,
+  "value1": 0.000766667,
+  "sensorId": 327
+},
+{
+  "buildingId": 16,
+  "value1": 0.012666667,
+  "sensorId": 326
+},
+{
+  "buildingId": 16,
+  "value1": 0.007883333,
+  "sensorId": 325
+},
+{
+  "buildingId": 16,
+  "value1": 0.004633333,
+  "sensorId": 324
+},
+{
+  "buildingId": 16,
+  "value1": 0.5133,
+  "sensorId": 323
+},
+{
+  "buildingId": 16,
+  "value1": 0.065216667,
+  "sensorId": 322
+},
+{
+  "buildingId": 16,
+  "value1": 0.031183333,
+  "sensorId": 330
+},
+{
+  "buildingId": 17,
+  "value1": 0.01965614198393064,
+  "sensorId": 341
+},
+{
+  "buildingId": 17,
+  "value1": 0,
+  "sensorId": 340
+},
+{
+  "buildingId": 17,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 359
+},
+{
+  "buildingId": 17,
+  "sensorId": 358,
+  "value1": 335.2019197259645,
+  "value2": 2.95766399758204
+},
+{
+  "buildingId": 17,
+  "value1": 1002.8847083001181,
+  "sensorId": 357
+},
+{
+  "value1": 59.18285659161662,
+  "buildingId": 17,
+  "value2": 0.8675814392907317,
+  "sensorId": 356
+},
+{
+  "buildingId": 17,
+  "sensorId": 355,
+  "value1": 59.18285659161662
+},
+{
+  "buildingId": 17,
+  "value1": 0.050843065363138595,
+  "sensorId": 354
+},
+{
+  "buildingId": 17,
+  "value1": 0.0009982118456559382,
+  "sensorId": 353
+},
+{
+  "buildingId": 17,
+  "value1": 0.003902473494457636,
+  "sensorId": 352
+},
+{
+  "buildingId": 17,
+  "value1": 0.0009571330968655212,
+  "sensorId": 351
+},
+{
+  "buildingId": 17,
+  "value1": 0.00001646432958654002,
+  "sensorId": 349
+},
+{
+  "buildingId": 17,
+  "value1": 0.0006202877018449001,
+  "sensorId": 348
+},
+{
+  "buildingId": 17,
+  "value1": 0.000616180245968258,
+  "sensorId": 347
+},
+{
+  "buildingId": 17,
+  "value1": 0.012459159589814342,
+  "sensorId": 346
+},
+{
+  "buildingId": 17,
+  "value1": 0.14202127423271824,
+  "sensorId": 345
+},
+{
+  "buildingId": 17,
+  "value1": 0.6000771625047188,
+  "sensorId": 344
+},
+{
+  "buildingId": 17,
+  "value1": 0.03903294911691365,
+  "sensorId": 343
+},
+{
+  "buildingId": 17,
+  "value1": 0.06430454499390151,
+  "sensorId": 342
+},
+{
+  "buildingId": 17,
+  "value1": 0.3234123422379548,
+  "sensorId": 350
+},
+{
+  "buildingId": 18,
+  "value1": 0.022876133127408157,
+  "sensorId": 361
+},
+{
+  "buildingId": 18,
+  "value1": 0,
+  "sensorId": 360
+},
+{
+  "buildingId": 18,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 379
+},
+{
+  "buildingId": 18,
+  "sensorId": 378,
+  "value1": 168.88179917633448,
+  "value2": 12.434863684575966
+},
+{
+  "buildingId": 18,
+  "value1": 1089.104739044937,
+  "sensorId": 377
+},
+{
+  "value1": 84.78511726801709,
+  "buildingId": 18,
+  "value2": 0.7099489646903233,
+  "sensorId": 376
+},
+{
+  "buildingId": 18,
+  "sensorId": 375,
+  "value1": 84.78511726801709
+},
+{
+  "buildingId": 18,
+  "value1": 0.00378280869823658,
+  "sensorId": 374
+},
+{
+  "buildingId": 18,
+  "value1": 0.0014700961617453753,
+  "sensorId": 373
+},
+{
+  "buildingId": 18,
+  "value1": 0.004114476954455283,
+  "sensorId": 372
+},
+{
+  "buildingId": 18,
+  "value1": 0.0009143282121011739,
+  "sensorId": 371
+},
+{
+  "buildingId": 18,
+  "value1": 0,
+  "sensorId": 369
+},
+{
+  "buildingId": 18,
+  "value1": 0,
+  "sensorId": 368
+},
+{
+  "buildingId": 18,
+  "value1": 0.0005916241372419361,
+  "sensorId": 367
+},
+{
+  "buildingId": 18,
+  "value1": 0.014064519262615116,
+  "sensorId": 366
+},
+{
+  "buildingId": 18,
+  "value1": 0.16509002629673844,
+  "sensorId": 365
+},
+{
+  "buildingId": 18,
+  "value1": 0.1434061050873335,
+  "sensorId": 364
+},
+{
+  "buildingId": 18,
+  "value1": 0.04451523450569602,
+  "sensorId": 363
+},
+{
+  "buildingId": 18,
+  "value1": 0.08661915209346709,
+  "sensorId": 362
+},
+{
+  "buildingId": 18,
+  "value1": 0.03348951141016526,
+  "sensorId": 370
+},
+{
+  "buildingId": 19,
+  "value1": 0.01955755318401124,
+  "sensorId": 381
+},
+{
+  "buildingId": 19,
+  "value1": 0.1127938030054364,
+  "sensorId": 380
+},
+{
+  "buildingId": 19,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 399
+},
+{
+  "buildingId": 19,
+  "sensorId": 398,
+  "value1": 17.745983985492238,
+  "value2": 4.732262396131263
+},
+{
+  "buildingId": 19,
+  "value1": 1008.1099146958463,
+  "sensorId": 397
+},
+{
+  "value1": 72.65008666060683,
+  "buildingId": 19,
+  "value2": 0.4633673596211862,
+  "sensorId": 396
+},
+{
+  "buildingId": 19,
+  "sensorId": 395,
+  "value1": 72.65008666060683
+},
+{
+  "buildingId": 19,
+  "value1": 0.14054655018274786,
+  "sensorId": 394
+},
+{
+  "buildingId": 19,
+  "value1": 0.001610283649859555,
+  "sensorId": 393
+},
+{
+  "buildingId": 19,
+  "value1": 0.0038531790944979355,
+  "sensorId": 392
+},
+{
+  "buildingId": 19,
+  "value1": 0.0010064270038812222,
+  "sensorId": 391
+},
+{
+  "buildingId": 19,
+  "value1": 0,
+  "sensorId": 389
+},
+{
+  "buildingId": 19,
+  "value1": 0.00015609885104838549,
+  "sensorId": 388
+},
+{
+  "buildingId": 19,
+  "value1": 0.0007558477946780765,
+  "sensorId": 387
+},
+{
+  "buildingId": 19,
+  "value1": 0.012520777589763969,
+  "sensorId": 386
+},
+{
+  "buildingId": 19,
+  "value1": 0.023895460133992897,
+  "sensorId": 385
+},
+{
+  "buildingId": 19,
+  "value1": 0.004839066847219948,
+  "sensorId": 384
+},
+{
+  "buildingId": 19,
+  "value1": 0.1542216384692162,
+  "sensorId": 383
+},
+{
+  "buildingId": 19,
+  "value1": 0.06745117069368106,
+  "sensorId": 382
+},
+{
+  "buildingId": 19,
+  "value1": 0.028110131823491303,
+  "sensorId": 390
+},
+{
+  "buildingId": 20,
+  "value1": 0.019833333,
+  "sensorId": 401
+},
+{
+  "buildingId": 20,
+  "value1": 0.1151,
+  "sensorId": 400
+},
+{
+  "buildingId": 20,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 419
+},
+{
+  "buildingId": 20,
+  "sensorId": 418,
+  "value1": 178,
+  "value2": 6.66
+},
+{
+  "buildingId": 20,
+  "value1": 1024.03,
+  "sensorId": 417
+},
+{
+  "value1": 66.19,
+  "buildingId": 20,
+  "value2": 0.55,
+  "sensorId": 416
+},
+{
+  "buildingId": 20,
+  "sensorId": 415,
+  "value1": 66.19
+},
+{
+  "buildingId": 20,
+  "value1": 0.0035,
+  "sensorId": 414
+},
+{
+  "buildingId": 20,
+  "value1": 0.001616667,
+  "sensorId": 413
+},
+{
+  "buildingId": 20,
+  "value1": 0.00385,
+  "sensorId": 412
+},
+{
+  "buildingId": 20,
+  "value1": 0.00075,
+  "sensorId": 411
+},
+{
+  "buildingId": 20,
+  "value1": 0,
+  "sensorId": 409
+},
+{
+  "buildingId": 20,
+  "value1": 0.0000333,
+  "sensorId": 408
+},
+{
+  "buildingId": 20,
+  "value1": 0.000583333,
+  "sensorId": 407
+},
+{
+  "buildingId": 20,
+  "value1": 0.0127,
+  "sensorId": 406
+},
+{
+  "buildingId": 20,
+  "value1": 0.04565,
+  "sensorId": 405
+},
+{
+  "buildingId": 20,
+  "value1": 0.12415,
+  "sensorId": 404
+},
+{
+  "buildingId": 20,
+  "value1": 0.079066667,
+  "sensorId": 403
+},
+{
+  "buildingId": 20,
+  "value1": 0.06565,
+  "sensorId": 402
+},
+{
+  "buildingId": 20,
+  "value1": 0.03105,
+  "sensorId": 410
+},
+{
+  "buildingId": 21,
+  "value1": 0.019964231737206767,
+  "sensorId": 421
+},
+{
+  "buildingId": 21,
+  "value1": 0,
+  "sensorId": 420
+},
+{
+  "buildingId": 21,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 439
+},
+{
+  "buildingId": 21,
+  "sensorId": 438,
+  "value1": 57.18150395325277,
+  "value2": 7.118111354180775
+},
+{
+  "buildingId": 21,
+  "value1": 1017.5842983681009,
+  "sensorId": 437
+},
+{
+  "value1": 52.70557243691195,
+  "buildingId": 21,
+  "value2": 0.7196982394116297,
+  "sensorId": 436
+},
+{
+  "buildingId": 21,
+  "sensorId": 435,
+  "value1": 52.70557243691195
+},
+{
+  "buildingId": 21,
+  "value1": 0.03375844832122567,
+  "sensorId": 434
+},
+{
+  "buildingId": 21,
+  "value1": 0.10000190572295008,
+  "sensorId": 433
+},
+{
+  "buildingId": 21,
+  "value1": 0.002879614695293847,
+  "sensorId": 432
+},
+{
+  "buildingId": 21,
+  "value1": 0.0010105349527018638,
+  "sensorId": 431
+},
+{
+  "buildingId": 21,
+  "value1": 0,
+  "sensorId": 429
+},
+{
+  "buildingId": 21,
+  "value1": 0.00010269674874004298,
+  "sensorId": 428
+},
+{
+  "buildingId": 21,
+  "value1": 0.0006736898041532427,
+  "sensorId": 427
+},
+{
+  "buildingId": 21,
+  "value1": 0.012767249589562471,
+  "sensorId": 426
+},
+{
+  "buildingId": 21,
+  "value1": 0.030139417626536318,
+  "sensorId": 425
+},
+{
+  "buildingId": 21,
+  "value1": 0.1219789929467513,
+  "sensorId": 424
+},
+{
+  "buildingId": 21,
+  "value1": 0.0631502342971972,
+  "sensorId": 423
+},
+{
+  "buildingId": 21,
+  "value1": 0.06609968215066594,
+  "sensorId": 422
+},
+{
+  "buildingId": 21,
+  "value1": 0.029790249124469766,
+  "sensorId": 430
+},
+{
+  "buildingId": 22,
+  "value1": 0.02266099707750199,
+  "sensorId": 441
+},
+{
+  "buildingId": 22,
+  "value1": 0.00027788424374216306,
+  "sensorId": 440
+},
+{
+  "buildingId": 22,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 459
+},
+{
+  "buildingId": 22,
+  "sensorId": 458,
+  "value1": 203.30356716131985,
+  "value2": 3.1087159211439914
+},
+{
+  "buildingId": 22,
+  "value1": 1098.63526605578,
+  "sensorId": 457
+},
+{
+  "value1": 52.47168257211207,
+  "buildingId": 22,
+  "value2": 1.0003826320636373,
+  "sensorId": 456
+},
+{
+  "buildingId": 22,
+  "sensorId": 455,
+  "value1": 52.47168257211207
+},
+{
+  "buildingId": 22,
+  "value1": 0.004625425072982409,
+  "sensorId": 454
+},
+{
+  "buildingId": 22,
+  "value1": 0.0016404123805344591,
+  "sensorId": 453
+},
+{
+  "buildingId": 22,
+  "value1": 0.0034690688047368068,
+  "sensorId": 452
+},
+{
+  "buildingId": 22,
+  "value1": 0.0010756802495307928,
+  "sensorId": 451
+},
+{
+  "buildingId": 22,
+  "value1": 0.00000898193008358212,
+  "sensorId": 449
+},
+{
+  "buildingId": 22,
+  "value1": 0.000035820152309375404,
+  "sensorId": 448
+},
+{
+  "buildingId": 22,
+  "value1": 0.0007529761746715549,
+  "sensorId": 447
+},
+{
+  "buildingId": 22,
+  "value1": 0.014369295512595548,
+  "sensorId": 446
+},
+{
+  "buildingId": 22,
+  "value1": 0.01898575640421849,
+  "sensorId": 445
+},
+{
+  "buildingId": 22,
+  "value1": 0.0057548893349897426,
+  "sensorId": 444
+},
+{
+  "buildingId": 22,
+  "value1": 0.0690765998447557,
+  "sensorId": 443
+},
+{
+  "buildingId": 22,
+  "value1": 0.0704032723317904,
+  "sensorId": 442
+},
+{
+  "buildingId": 22,
+  "value1": 0.037039256771457,
+  "sensorId": 450
+},
+{
+  "buildingId": 23,
+  "value1": 0.019927261183708994,
+  "sensorId": 461
+},
+{
+  "buildingId": 23,
+  "value1": 0.102651479720784,
+  "sensorId": 460
+},
+{
+  "buildingId": 23,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 479
+},
+{
+  "buildingId": 23,
+  "sensorId": 478,
+  "value1": 287.8792957646519,
+  "value2": 3.568914557082328
+},
+{
+  "buildingId": 23,
+  "value1": 1013.0294958118244,
+  "sensorId": 477
+},
+{
+  "value1": 26.11617309864941,
+  "buildingId": 23,
+  "value2": 0.7591337593793902,
+  "sensorId": 476
+},
+{
+  "buildingId": 23,
+  "sensorId": 475,
+  "value1": 29.803394215635024
+},
+{
+  "buildingId": 23,
+  "value1": 0.3716140497473727,
+  "sensorId": 474
+},
+{
+  "buildingId": 23,
+  "value1": 0.0016677937009885392,
+  "sensorId": 473
+},
+{
+  "buildingId": 23,
+  "value1": 0.003105547197461142,
+  "sensorId": 472
+},
+{
+  "buildingId": 23,
+  "value1": 0.0009694562039114467,
+  "sensorId": 471
+},
+{
+  "buildingId": 23,
+  "value1": 0,
+  "sensorId": 469
+},
+{
+  "buildingId": 23,
+  "value1": 0.00000820751759329016,
+  "sensorId": 468
+},
+{
+  "buildingId": 23,
+  "value1": 0.00045597344609923094,
+  "sensorId": 467
+},
+{
+  "buildingId": 23,
+  "value1": 0.01271384699431013,
+  "sensorId": 466
+},
+{
+  "buildingId": 23,
+  "value1": 0.0077310048960317216,
+  "sensorId": 465
+},
+{
+  "buildingId": 23,
+  "value1": 0.13239243493823805,
+  "sensorId": 464
+},
+{
+  "buildingId": 23,
+  "value1": 0.041411403914969204,
+  "sensorId": 463
+},
+{
+  "buildingId": 23,
+  "value1": 0.07470566289245435,
+  "sensorId": 462
+},
+{
+  "buildingId": 23,
+  "value1": 0.028993322827473272,
+  "sensorId": 470
+},
+{
+  "buildingId": 24,
+  "value1": 0.020783333,
+  "sensorId": 481
+},
+{
+  "buildingId": 24,
+  "value1": 0,
+  "sensorId": 480
+},
+{
+  "buildingId": 24,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 499
+},
+{
+  "buildingId": 24,
+  "sensorId": 498,
+  "value1": 326,
+  "value2": 3.96
+},
+{
+  "buildingId": 24,
+  "value1": 1022.75,
+  "sensorId": 497
+},
+{
+  "value1": 35.59,
+  "buildingId": 24,
+  "value2": 0.74,
+  "sensorId": 496
+},
+{
+  "buildingId": 24,
+  "sensorId": 495,
+  "value1": 38.47
+},
+{
+  "buildingId": 24,
+  "value1": 0.004316667,
+  "sensorId": 494
+},
+{
+  "buildingId": 24,
+  "value1": 0.001233333,
+  "sensorId": 493
+},
+{
+  "buildingId": 24,
+  "value1": 0.00335,
+  "sensorId": 492
+},
+{
+  "buildingId": 24,
+  "value1": 0.000983333,
+  "sensorId": 491
+},
+{
+  "buildingId": 24,
+  "value1": 0,
+  "sensorId": 489
+},
+{
+  "buildingId": 24,
+  "value1": 0.000116667,
+  "sensorId": 488
+},
+{
+  "buildingId": 24,
+  "value1": 0.000566667,
+  "sensorId": 487
+},
+{
+  "buildingId": 24,
+  "value1": 0.013133333,
+  "sensorId": 486
+},
+{
+  "buildingId": 24,
+  "value1": 0.126316667,
+  "sensorId": 485
+},
+{
+  "buildingId": 24,
+  "value1": 0.138033333,
+  "sensorId": 484
+},
+{
+  "buildingId": 24,
+  "value1": 0.043666667,
+  "sensorId": 483
+},
+{
+  "buildingId": 24,
+  "value1": 0.063083333,
+  "sensorId": 482
+},
+{
+  "buildingId": 24,
+  "value1": 0.345833333,
+  "sensorId": 490
+},
+{
+  "buildingId": 25,
+  "value1": 0.40685543776973804,
+  "sensorId": 501
+},
+{
+  "buildingId": 25,
+  "value1": 0.000176638348679594,
+  "sensorId": 500
+},
+{
+  "buildingId": 25,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 519
+},
+{
+  "buildingId": 25,
+  "sensorId": 518,
+  "value1": 276.0486397743237,
+  "value2": 14.739025587950497
+},
+{
+  "buildingId": 25,
+  "value1": 986.1936244737634,
+  "sensorId": 517
+},
+{
+  "value1": 22.07403230195396,
+  "buildingId": 25,
+  "value2": 0.5718150395325277,
+  "sensorId": 516
+},
+{
+  "buildingId": 25,
+  "sensorId": 515,
+  "value1": 32.14980765371677
+},
+{
+  "buildingId": 25,
+  "value1": 0.3109778303410643,
+  "sensorId": 514
+},
+{
+  "buildingId": 25,
+  "value1": 0.0015075869011195121,
+  "sensorId": 513
+},
+{
+  "buildingId": 25,
+  "value1": 0.003085007699829933,
+  "sensorId": 512
+},
+{
+  "buildingId": 25,
+  "value1": 0.0009365933527623128,
+  "sensorId": 511
+},
+{
+  "buildingId": 25,
+  "value1": 0,
+  "sensorId": 509
+},
+{
+  "buildingId": 25,
+  "value1": 0.00025057970214714513,
+  "sensorId": 508
+},
+{
+  "buildingId": 25,
+  "value1": 0.0007188765017643015,
+  "sensorId": 507
+},
+{
+  "buildingId": 25,
+  "value1": 0.012335923836387092,
+  "sensorId": 506
+},
+{
+  "buildingId": 25,
+  "value1": 0.00798980074229215,
+  "sensorId": 505
+},
+{
+  "buildingId": 25,
+  "value1": 0.004793880149608891,
+  "sensorId": 504
+},
+{
+  "buildingId": 25,
+  "value1": 0.06849046104165543,
+  "sensorId": 503
+},
+{
+  "buildingId": 25,
+  "value1": 0.06188911890293217,
+  "sensorId": 502
+},
+{
+  "buildingId": 25,
+  "value1": 0.028644154571878726,
+  "sensorId": 510
+},
+{
+  "buildingId": 26,
+  "value1": 0.022813385471412276,
+  "sensorId": 521
+},
+{
+  "buildingId": 26,
+  "value1": 0.00000898193008358212,
+  "sensorId": 520
+},
+{
+  "buildingId": 26,
+  "value1": 0,
+  "value2": 0,
+  "sensorId": 539
+},
+{
+  "buildingId": 26,
+  "sensorId": 538,
+  "value1": 352.82312184610004,
+  "value2": 6.85208318951115
+},
+{
+  "buildingId": 26,
+  "value1": 1099.8400279352545,
+  "sensorId": 537
+},
+{
+  "value1": 33.56122378536074,
+  "buildingId": 26,
+  "value2": 0.5485969272607043,
+  "sensorId": 536
+},
+{
+  "buildingId": 26,
+  "sensorId": 535,
+  "value1": 39.14400428042555
+},
+{
+  "buildingId": 26,
+  "value1": 0.00457164106050587,
+  "sensorId": 534
+},
+{
+  "buildingId": 26,
+  "value1": 0.0018017644179640778,
+  "sensorId": 533
+},
+{
+  "buildingId": 26,
+  "value1": 0.0034242484357796072,
+  "sensorId": 532
+},
+{
+  "buildingId": 26,
+  "value1": 0.001048788243292523,
+  "sensorId": 531
+},
+{
+  "buildingId": 26,
+  "value1": 0.00000898193008358212,
+  "sensorId": 529
+},
+{
+  "buildingId": 26,
+  "value1": 0.00017927986230842387,
+  "sensorId": 528
+},
+{
+  "buildingId": 26,
+  "value1": 0.0005557684874843261,
+  "sensorId": 527
+},
+{
+  "buildingId": 26,
+  "value1": 0.014234834943564076,
+  "sensorId": 526
+},
+{
+  "buildingId": 26,
+  "value1": 0.12907266576233567,
+  "sensorId": 525
+},
+{
+  "buildingId": 26,
+  "value1": 0.13425385932280243,
+  "sensorId": 524
+},
+{
+  "buildingId": 26,
+  "value1": 0.4796906436347378,
+  "sensorId": 523
+},
+{
+  "buildingId": 26,
+  "value1": 0.13870896817699574,
+  "sensorId": 522
+},
+{
+  "buildingId": 26,
+  "value1": 0.036304208421664264,
+  "sensorId": 530
+},
+{
+  "buildingId": 27,
+  "value1": 0.019997094588355902,
+  "sensorId": 541
+},
+{
+  "buildingId": 27,
+  "value1": 0.00027933460447563736,
+  "sensorId": 540
+},
+{
+  "buildingId": 27,
+  "value1": 0.0047,
+  "value2": 0.19,
+  "sensorId": 559
+},
+{
+  "buildingId": 27,
+  "sensorId": 558,
+  "value1": 171.5445118597583,
+  "value2": 2.2675423981462304
+},
+{
+  "buildingId": 27,
+  "value1": 998.7242609435193,
+  "sensorId": 557
+},
+{
+  "value1": 28.521739816682803,
+  "buildingId": 27,
+  "value2": 0.887299199274612,
+  "sensorId": 556
+},
+{
+  "buildingId": 27,
+  "sensorId": 555,
+  "value1": 28.521739816682803
+},
+{
+  "buildingId": 27,
+  "value1": 0.06768121139114101,
+  "sensorId": 554
+},
+{
+  "buildingId": 27,
+  "value1": 0.0015568817940232124,
+  "sensorId": 553
+},
+{
+  "buildingId": 27,
+  "value1": 0.0030726845927840076,
+  "sensorId": 552
+},
+{
+  "buildingId": 27,
+  "value1": 0.0009612410456861628,
+  "sensorId": 551
+},
+{
+  "buildingId": 27,
+  "value1": 0.000004116082396635005,
+  "sensorId": 549
+},
+{
+  "buildingId": 27,
+  "value1": 0.000004116082396635005,
+  "sensorId": 548
+},
+{
+  "buildingId": 27,
+  "value1": 0.0007024454458977342,
+  "sensorId": 547
+},
+{
+  "buildingId": 27,
+  "value1": 0.012771357538383113,
+  "sensorId": 546
+},
+{
+  "buildingId": 27,
+  "value1": 0.007665279440205453,
+  "sensorId": 545
+},
+{
+  "buildingId": 27,
+  "value1": 0.005023920847068826,
+  "sensorId": 544
+},
+{
+  "buildingId": 27,
+  "value1": 0.039731286367518735,
+  "sensorId": 543
+},
+{
+  "buildingId": 27,
+  "value1": 0.06410736714759072,
+  "sensorId": 542
+},
+{
+  "buildingId": 27,
+  "value1": 0.02857842862310846,
+  "sensorId": 550
+}]

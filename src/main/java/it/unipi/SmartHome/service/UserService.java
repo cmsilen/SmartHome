@@ -52,7 +52,7 @@ public class UserService {
     String buildingsCollection = "Buildings";
     String sensorsCollectionName = "Sensors";
     String readingsCollectionName = "Readings";
-    String dbName = "SmartHome2";
+    String dbName = "SmartHome";
 
     // Connessione a MongoDB
     //ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
@@ -1140,6 +1140,7 @@ public class UserService {
         );
 
         if(result.first() != null) {
+            System.out.println(result);
             return new Document("percentage", 
                 100 * result.first().getDouble("avgPercent")
             );
