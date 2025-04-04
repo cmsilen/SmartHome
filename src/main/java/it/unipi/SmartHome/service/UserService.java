@@ -678,6 +678,11 @@ public class UserService {
             Bson filter = Filters.eq("sensorID", sensor.getInteger("id"));
             Document foundReading = readingsCollection.find(filter).sort(new Document("timestamp", -1)).first();
             Document currentReading;
+
+            if(foundReading == null) {
+                result.put(currentSensor);
+                continue;
+            }
             if (foundReading.containsKey("consumption")) {
                 System.out.println(1);
                 Double consumption = getReadingData(foundReading, "consumption");
