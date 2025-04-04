@@ -38,6 +38,8 @@ import it.unipi.SmartHome.model.User;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
 
+import javax.print.Doc;
+
 @Service
 public class UserService {
 
@@ -52,7 +54,7 @@ public class UserService {
     String buildingsCollection = "Buildings";
     String sensorsCollectionName = "Sensors";
     String readingsCollectionName = "Readings";
-    String dbName = "SmartHome2";
+    String dbName = "SmartHome";
 
     // Connessione a MongoDB
     //ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
@@ -624,7 +626,7 @@ public class UserService {
         readingsCollection.insertOne(readingDocument);
         jedis.set(redisKey, redisValue.toJson());
 
-        return readingDocument.toJson();
+        return new Document("result", "success").toJson();
     }
 
     // Descrizione:
@@ -1115,33 +1117,28 @@ public class UserService {
 
 
         Document stage2 = new Document();
-        stage2.append("_id", "$timestamp");
+        stage2.append("_id", "");
         stage2.append("totalPowerConsumption", new Document("$sum", "$consumption"));
         stage2.append("totalPowerProduction", new Document("$sum", "$production"));
         stage2 = new Document("$group", stage2);
 
 
         Document stage3 = new Document();
-        stage3.append("percent", new Document("$divide", List.of("$totalPowerProduction", "$totalPowerConsumption")));
-        stage3 = new Document("$addFields", stage3);
-
-        Document stage4 = new Document();
-        stage4.append("_id", "");
-        stage4.append("avgPercent", new Document("$avg", "$percent"));
-        stage4 = new Document("$group", stage4);
+        Document condition = new Document("if", new Document("$eq", List.of("$totalPowerConsumption", 0))).append("then", null)
+                                .append("else", new Document("$divide", List.of("$totalPowerProduction", "$totalPowerConsumption")));
+        stage3 = new Document("$project", new Document("percent", new Document("$cond", condition)));
 
         AggregateIterable<Document> result = readingsCollection.aggregate(
             Arrays.asList(
                 Aggregates.match(stage1),
                 stage2,
-                stage3,
-                stage4
+                stage3
             )
         );
 
         if(result.first() != null) {
             return new Document("percentage", 
-                100 * result.first().getDouble("avgPercent")
+                100 * result.first().getDouble("percent")
             );
         }
 
