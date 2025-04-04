@@ -580,50 +580,51 @@ public class UserService {
             .append("buildingID", buildingId)
             .append("timestamp", date);
         String redisKey = "reading:" + sensorId + ":last";
-        String redisValue = null;
+        Document redisValue = new Document();
         String type = foundSensor.getString("type");
 
-        // TODO DA RIGUARDARE redisValue (forse meglio un json?)
         if (type.equals("PowerConsumption")) {
             readingDocument.append("consumption", value1);
-            redisValue = "Power Consumption :: consumption: " + value1;
+            redisValue.append("consumption", value1);
         } 
         else if (type.equals("SolarPanel")) {
             readingDocument.append("production", value1); 
-            redisValue = "Solar Panel :: production: " + value1;
+            redisValue.append("production", value1);
         } 
         else if (type.equals("Temperature")) {
             readingDocument.append("temperature", value1);
-            redisValue = "Temperature :: temperature: " + value1;
+            redisValue.append("temperature", value1);
         }
         else if (type.equals("Humidity")) {
             readingDocument.append("apparentTemperature", value1);
             readingDocument.append("humidity", value2);
-            redisValue = "Humidity :: apparentTemperature: " + value1 + ", humidity: " + value2;
+            redisValue.append("apparentTemperature", value1);
+            redisValue.append("humidity", value2);
         } 
         else if (type.equals("Pressure")) {
             readingDocument.append("pressure", value1);
-            redisValue = "Pressure :: pressure: " + value1;
+            redisValue.append("pressure", value1);
         } 
         else if (type.equals("Wind")) {
             readingDocument.append("windSpeed", value1);
             readingDocument.append("windBearing", value2);
-            redisValue = "Wind :: windSpeed: " + value1 + ", windBearing: " + value2;
+            redisValue.append("windSpeed", value1);
+            redisValue.append("windBearing", value2);
         } 
         else if (type.equals("Precipitation")) {
             readingDocument.append("precipitationIntensity", value1);
             readingDocument.append("precipitationProbability", value2);
-            redisValue = "Precipitation :: precipitationIntensity: " + value1 + ", precipitationProbability: " + value2;
+            redisValue.append("precipitationIntensity", value1);
+            redisValue.append("precipitationProbability", value2);
         } 
         else {
             Document notFoundSensor = new Document("error", "Sensor type not supported");
             return notFoundSensor.toJson();
         }
         readingsCollection.insertOne(readingDocument);
-        jedis.set(redisKey, redisValue);
+        jedis.set(redisKey, redisValue.toJson());
 
         return readingDocument.toJson();
-
     }
 
     // Descrizione:
@@ -658,81 +659,76 @@ public class UserService {
 
         // Crea lista dei sensori
         List<Document> sensors = foundBuilding.getList("sensors", Document.class);
-        List<Integer> sensorIds = new ArrayList<>();
-        for (Document sensor : sensors) {
-            Integer sensorId = sensor.getInteger("id");
-            sensorIds.add(sensorId);
-        }
 
         // Per ogni sensore ottieni l'ultima lettura
-        List<String> sensorLastreadings = new ArrayList<>();
-        for (Integer sensorId : sensorIds) {
+        JSONArray result = new JSONArray();
+        for (Document sensor : sensors) {
+            Document currentSensor = new Document("sensorID", sensor.get("id")).append("name", sensor.get("name"));
 
             // Controlla se c'e' nel KV DB 
-            String jedisKey = "reading:" + sensorId + ":last";
+            String jedisKey = "reading:" + sensor.getInteger("id") + ":last";
             if (jedis.exists(jedisKey)) {
                 System.out.println("Reading found in Redis");
                 String reading = jedis.get(jedisKey);
-                sensorLastreadings.add(reading);
+                currentSensor.append("lastReading", Document.parse(reading));
+                result.put(currentSensor);
                 continue;
             }
 
             // Altrimenti la va a prendere da MongoDB
-            Bson filter = Filters.eq("sensorID", sensorId);
+            Bson filter = Filters.eq("sensorID", sensor.getInteger("id"));
             Document foundReading = readingsCollection.find(filter).sort(new Document("timestamp", -1)).first();
+            Document currentReading;
+
+            if(foundReading == null) {
+                result.put(currentSensor);
+                continue;
+            }
             if (foundReading.containsKey("consumption")) {
                 System.out.println(1);
                 Double consumption = getReadingData(foundReading, "consumption");
-                sensorLastreadings.add("Power Consumption :: consumption: " + consumption);
-            } 
+                currentReading = new Document("consumption", consumption);
+            }
             else if (foundReading.containsKey("production")) {
                 System.out.println(2);
                 Double production = getReadingData(foundReading, "production");
-                sensorLastreadings.add("Solar Panel :: production: " + production);
-            } 
+                currentReading = new Document("production", production);
+            }
             else if (foundReading.containsKey("temperature")) {
                 System.out.println(3);
                 Double temperature = getReadingData(foundReading, "temperature");
-                sensorLastreadings.add("Temperature :: temperature: " + temperature);
-            } 
+                currentReading = new Document("temperature", temperature);
+            }
             else if (foundReading.containsKey("apparentTemperature")) {
                 System.out.println(4);
                 Double apparentTemperature = getReadingData(foundReading, "apparentTemperature");
                 Double humidity = getReadingData(foundReading, "humidity");
-                sensorLastreadings.add("Humidity :: apparentTemperature: " + apparentTemperature + ", humidity: " + humidity);
-            } 
+                currentReading = new Document("apparentTemperature", apparentTemperature).append("humidity", humidity);
+            }
             else if (foundReading.containsKey("pressure")) {
                 System.out.println(5);
                 Double pressure = getReadingData(foundReading, "pressure");
-                sensorLastreadings.add("Pressure :: pressure: " + pressure);
-            } 
+                currentReading = new Document("pressure", pressure);
+            }
             else if (foundReading.containsKey("windSpeed")) {
                 System.out.println(6);
                 Double windSpeed = getReadingData(foundReading, "windSpeed");
                 Double windBearing = getReadingData(foundReading, "windBearing");
-                sensorLastreadings.add("Wind :: windSpeed: " + windSpeed + ", windBearing: " + windBearing);
-            } 
+                currentReading = new Document("windSpeed", windSpeed).append("windBearing", windBearing);
+            }
             else if (foundReading.containsKey("precipitationIntensity")) {
                 System.out.println(7);
                 Double precipitationIntensity = getReadingData(foundReading, "precipitationIntensity");
                 Double precipitationProbability = getReadingData(foundReading, "precipitationProbability");
-                sensorLastreadings.add("Precipitation :: precipitationIntensity: " + precipitationIntensity + ", precipitationProbability: " + precipitationProbability);
+                currentReading = new Document("precipitationIntensity", precipitationIntensity).append("precipitationProbability", precipitationProbability);
             }
             else {
                 System.out.println(8);
-                sensorLastreadings.add("Sensor type not supported");
+                currentReading = new Document("error", "Sensor type not supported");
             }
-            jedis.set(jedisKey, sensorLastreadings.get(sensorLastreadings.size() - 1));
-        }
-
-        // Converti Liste in risposta TODO controllare il valore di lastReading
-        Iterator<String> readingIterator = sensorLastreadings.iterator();
-        Iterator<Integer> idIterator = sensorIds.iterator();
-        JSONArray result = new JSONArray();
-        while (readingIterator.hasNext() && idIterator.hasNext()) {
-            String reading = readingIterator.next();
-            Integer id = idIterator.next();
-            result.put(new Document("sensorID", id).append("lastReading", reading));
+            currentSensor.append("lastReading", currentReading);
+            jedis.set(jedisKey, currentReading.toJson());
+            result.put(currentSensor);
         }
 
         return result.toString(4);
