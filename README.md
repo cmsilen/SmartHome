@@ -23,7 +23,7 @@ ottimizza POST /login (che possiamo supporre avvenga abbastanza spesso), ottimiz
 CON:
 verrebbe scritto solo da POST /building che e' un operazione velocissima che avviene molto poco quindi il rallentamento e' trascurabile
 PRO:
- velocizzerebbe DELETE /building perché deve controllare che l'edificio esista (filtra sull'id), ottimizzerebbe POST /building/user perché deve accedere al building dall'ID per aggiungere l'utente e controllare l'admin, ottimizzerebbe POST /building/sensor perché filtra su buildingID per controllare che l'utente sia admin e aggiungere il sensore, ottimizzerebbe DELETE /building/sensor perché filtra su buildingID per controllare che l'utente sia admin e rimuovere il sensore, ottimizzerebbe POST /reading perché filtra su buildingID per controllare che l'utente sia admin (questa e' la piu' importante perche' rappresenta il carico maggiore)
+ velocizzerebbe DELETE /building perché deve controllare che l'edificio esista (filtra sull'id), ottimizzerebbe POST /building/user perché deve accedere al building dall'ID per aggiungere l'utente e controllare l'admin, ottimizzerebbe POST /building/sensor perché filtra su buildingID per controllare che l'utente sia admin e aggiungere il sensore, ottimizzerebbe DELETE /building/sensor perché filtra su buildingID per controllare che l'utente sia admin e rimuovere il sensore.
 ##### id di Sensors:
 CON:
 rallenterebbe la POST /building/sensor che e' un'operazione veloce e che non avviene molto spesso
@@ -137,11 +137,15 @@ Per connettersi da Java usare questa funzione:
 
 ### DA FARE:
 1. Deployment su Cluster locale, quindi gestire le repliche sia per mongoDB che per Redis (bisogna avere almeno tre repliche per mongoDB e valurare per entrambi l'eventual consistency) e valutare se implementare lo sharding (quindi pensiamo una possibile soluzione di sharding poi l'analizziamo e valutiamo se vale la pena implementarla o meno) 
-[Manca argomentare MongoDB Sharding ed Eviction Redis]
+##### [Manca argomentare MongoDB Sharding ed Eviction Redis]
 2. Deployment sulla Macchina Virtuale (bisogna sentire il Ducange)
+##### [Da Fare]
 3. Indici, bisogna discuterne e poi fare delle prove con e senza (immagino basti far vedere dei dati che abbiamo ricavato e magari gli script che abbiamo usato per ottenerli)
+##### [Fatto e' tutto in /indexTests]
 4. Pensare ai test da fare sull'API durante la presentazione (quindi quale API chiamare, che test fare con POSTMAN e cose varie)
+##### [Da Fare]
 5. Scrivere la Documentazione seguendo la consegna 
-6. Fare degli unit test da fargli vedere (tipo codice python che registra l'utente e poi lo fa loggare) [Fatto]
-7. Fare statistiche sulle varie operazioni nel DB 
+##### [Da Fare]
+6. Fare degli unit test da fargli vedere (tipo codice python che registra l'utente e poi lo fa loggare) 
+##### [Fatto]
 

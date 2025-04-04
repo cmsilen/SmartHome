@@ -1,0 +1,1 @@
+Le cartelle rappresentano i tipi di indici che vado a testare. All'interno ci sono le query indicizzate in base al al tipo (e.g. nella cartella timeseries testiamo tutte le analitics) 

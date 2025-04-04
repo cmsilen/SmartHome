@@ -52,7 +52,7 @@ public class UserService {
     String buildingsCollection = "Buildings";
     String sensorsCollectionName = "Sensors";
     String readingsCollectionName = "Readings";
-    String dbName = "SmartHome";
+    String dbName = "SmartHome2";
 
     // Connessione a MongoDB
     //ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
@@ -634,6 +634,7 @@ public class UserService {
     // Risposta:
     //  String: lista dei sensori
     public String getUserSensors(String username, Integer buildingID) {
+
         if (username == null || buildingID == null) {
             return new Document("error", "invalid parameters").toJson();
         }
