@@ -137,7 +137,7 @@ rsconf = {
     }
 };
 rs.initiate(rsconf);
-rs.status(); # to check the status
+rs.status(); 
 rs.reconfig(rsconf);
 ```
 Per accedere al cluster di server con Java basta cambiare la URI

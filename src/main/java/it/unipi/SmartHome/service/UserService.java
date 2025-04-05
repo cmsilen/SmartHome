@@ -59,7 +59,7 @@ public class UserService {
     //ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
 
     // Connessione al cluster di MongoDB 
-    ConnectionString uri = new ConnectionString("mongodb://localhost:27018");
+    ConnectionString uri = new ConnectionString("mongodb://localhost:27018,localhost:27019,localhost:27020");
     MongoClientSettings mcs = MongoClientSettings.builder()
         .applyConnectionString(uri)
         .readPreference(ReadPreference.nearest())
