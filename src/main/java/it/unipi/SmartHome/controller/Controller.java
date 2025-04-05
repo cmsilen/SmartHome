@@ -68,7 +68,7 @@ public class Controller {
     @GetMapping("/logout")
     public String logout() {
 
-        return "User logged out successfully!";
+        return new Document("result", "success").toJson();
 
     }
     
