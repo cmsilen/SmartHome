@@ -17,7 +17,7 @@ if __name__ == "__main__":
     response = requests.post(url, json=data)
     response_data = response.json()
     expected_data = {
-        "sensorID": 0
+        "result": "success"
     }
 
     # Controllo che sia giusta

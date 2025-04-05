@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import javax.annotation.processing.Generated;
 
 import it.unipi.SmartHome.model.*;
-import it.unipi.SmartHome.service.UserService;
+import it.unipi.SmartHome.service.*;
 import org.bson.Document;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,6 +30,18 @@ public class Controller {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BuildingService buildingService;
+    
+    @Autowired
+    private SensorService sensorService;
+    
+    @Autowired
+    private ReadingService readingService;
+    
+    @Autowired
+    private AnalyticsService analyticsService;
     // private UserService userService = new UserService();
 
     // Descrizione:
@@ -96,7 +108,7 @@ public class Controller {
     //  String: messaggio di conferma
     @PostMapping("/building")
     public String addBuilding(@RequestBody Building building) {
-        return userService.addBuilding(building);
+        return buildingService.addBuilding(building);
     }
 
     // Descrizione:
@@ -111,7 +123,7 @@ public class Controller {
         @RequestParam(value = "id", defaultValue = "") Integer id, 
         @RequestParam(value = "admin", defaultValue = "") String username
     ) {
-        return userService.removeBuilding(id, username);
+        return buildingService.removeBuilding(id, username);
     }
 
     // Descrizione:
@@ -126,7 +138,7 @@ public class Controller {
     @PostMapping("/building/user")
     public String addUserToBuilding(@RequestBody AddUserToBuildingRequest addUserToBuildingRequest) {
 
-        String response = userService.addUserToBuilding(
+        String response = buildingService.addUserToBuilding(
             addUserToBuildingRequest.getUsername(),
             addUserToBuildingRequest.getAdmin(),
             addUserToBuildingRequest.getBuildingId()
@@ -144,7 +156,7 @@ public class Controller {
     //  String: messaggio di conferma
     @PostMapping("/building/sensor")
     public String addSensorToBuilding(@RequestBody AddSensorToBuildingRequest addSensorToBuildingRequest) {
-        return userService.addSensorToBuilding(addSensorToBuildingRequest);
+        return sensorService.addSensorToBuilding(addSensorToBuildingRequest);
     }
 
     // Descrizione:
@@ -162,7 +174,7 @@ public class Controller {
         @RequestParam(value = "admin", defaultValue = "") String username
     ) {
 
-        String response = userService.removeSensorFromBuilding(sensorId, buildingId, username);
+        String response = sensorService.removeSensorFromBuilding(sensorId, buildingId, username);
         return response;
 
     }
@@ -182,7 +194,7 @@ public class Controller {
     @PostMapping("/reading")
     public String addReading(@RequestBody AddReadingRequest addReadingRequest) {
     
-        String response = userService.addReading(addReadingRequest);
+        String response = readingService.addReading(addReadingRequest);
         return response;
 
     }
@@ -223,14 +235,14 @@ public class Controller {
         }
 
         // Controlla se e' nella cache
-        String response = userService.getRainyDaysCache(buildingId, year, month);
+        String response = analyticsService.getRainyDaysCache(buildingId, year, month);
         if (response != null) {
             return response;
         }
 
         // ha fatto MISS quindi aggiorna la cache
-        response = userService.getRainyDays(buildingId, year, month).toJson();
-        userService.setRainyDaysCache(buildingId, year, month, response);
+        response = analyticsService.getRainyDays(buildingId, year, month).toJson();
+        analyticsService.setRainyDaysCache(buildingId, year, month, response);
         return response;
 
     }
@@ -255,14 +267,14 @@ public class Controller {
         }
 
         // Controlla se e' nella cache
-        String response = userService.getTop5PowerConsumptionCache(buildingId, year, month, day);
+        String response = analyticsService.getTop5PowerConsumptionCache(buildingId, year, month, day);
         if (response != null) {
             return response;
         }
 
         // ha fatto MISS quindi aggiorna la cache
-        response = userService.getTop5PowerConsumption(buildingId, year, month, day).toString(4);
-        userService.setTop5PowerConsumptionCache(buildingId, year, month, day, response);
+        response = analyticsService.getTop5PowerConsumption(buildingId, year, month, day).toString(4);
+        analyticsService.setTop5PowerConsumptionCache(buildingId, year, month, day, response);
         return response;
     
     }
@@ -287,13 +299,13 @@ public class Controller {
         }
 
         // Controlla se e' nella cache
-        String response = userService.getPeakTemperatureCache(buildingId, year, month, day);
+        String response = analyticsService.getPeakTemperatureCache(buildingId, year, month, day);
         if (response != null) {
             return response;
         }
         // ha fatto MISS quindi aggiorna la cache
-        response = userService.getPeakTemperature(buildingId, year, month, day).toString(4);
-        userService.setPeakTemperatureCache(buildingId, year, month, day, response);
+        response = analyticsService.getPeakTemperature(buildingId, year, month, day).toString(4);
+        analyticsService.setPeakTemperatureCache(buildingId, year, month, day, response);
         return response;
     }
 
@@ -317,14 +329,14 @@ public class Controller {
         }
 
         // Controlla se e' nella cache
-        String response = userService.getPeakPowerConsumptionHoursCache(buildingId, year, month, day);
+        String response = analyticsService.getPeakPowerConsumptionHoursCache(buildingId, year, month, day);
         if (response != null) {
             return response;
         }
 
         // ha fatto MISS quindi aggiorna la cache
-        response = userService.getPeakPowerConsumptionHours(buildingId, year, month, day).toString(4);
-        userService.setPeakPowerConsumptionHoursCache(buildingId, year, month, day, response);
+        response = analyticsService.getPeakPowerConsumptionHours(buildingId, year, month, day).toString(4);
+        analyticsService.setPeakPowerConsumptionHoursCache(buildingId, year, month, day, response);
         return response;
 
     }
@@ -348,14 +360,14 @@ public class Controller {
         }
 
         // Controlla se e' nella cache
-        String response = userService.getPercentageOfPowerFromSolarPanelsCache(buildingId, year, month);
+        String response = analyticsService.getPercentageOfPowerFromSolarPanelsCache(buildingId, year, month);
         if (response != null) {
             return response;
         }
 
         // ha fatto MISS quindi aggiorna la cache
-        response = userService.getPercentageOfPowerFromSolarPanels(buildingId, year, month).toJson();
-        userService.setPercentageOfPowerFromSolarPanelsCache(buildingId, year, month, response);
+        response = analyticsService.getPercentageOfPowerFromSolarPanels(buildingId, year, month).toJson();
+        analyticsService.setPercentageOfPowerFromSolarPanelsCache(buildingId, year, month, response);
         return response;
         
     }
@@ -379,14 +391,14 @@ public class Controller {
         }
 
         // Controlla se e' nella cache
-        String response = userService.getMostHumidDayCache(buildingId, year, month);
+        String response = analyticsService.getMostHumidDayCache(buildingId, year, month);
         if (response != null) {
             return response;
         }
 
         // ha fatto MISS quindi aggiorna la cache
-        response = userService.getMostHumidDay(buildingId, year, month).toJson();
-        userService.setMostHumidDayCache(buildingId, year, month, response);
+        response = analyticsService.getMostHumidDay(buildingId, year, month).toJson();
+        analyticsService.setMostHumidDayCache(buildingId, year, month, response);
         return response;
 
     }
