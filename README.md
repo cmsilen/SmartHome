@@ -207,13 +207,13 @@ Per connettersi da Java usare questa funzione:
 
 ### DA FARE:
 1. Deployment su Cluster locale, quindi gestire le repliche sia per mongoDB che per Redis (bisogna avere almeno tre repliche per mongoDB e valurare per entrambi l'eventual consistency) e valutare se implementare lo sharding (quindi pensiamo una possibile soluzione di sharding poi l'analizziamo e valutiamo se vale la pena implementarla o meno) 
-##### [Manca argomentare MongoDB Sharding ed Eviction Redis]
+##### [Fatto]
 2. Deployment sulla Macchina Virtuale (bisogna sentire il Ducange)
 ##### [Da Fare]
 3. Indici, bisogna discuterne e poi fare delle prove con e senza (immagino basti far vedere dei dati che abbiamo ricavato e magari gli script che abbiamo usato per ottenerli)
 ##### [Fatto e' tutto in /indexTests]
 4. Pensare ai test da fare sull'API durante la presentazione (quindi quale API chiamare, che test fare con POSTMAN e cose varie)
-##### [Da Fare]
+##### [Fatto]
 5. Scrivere la Documentazione seguendo la consegna 
 ##### [Da Fare]
 6. Fare degli unit test da fargli vedere (tipo codice python che registra l'utente e poi lo fa loggare) 

@@ -4,13 +4,13 @@ import static com.mongodb.client.model.Filters.elemMatch;
 import static com.mongodb.client.model.Updates.pull;
 import static com.mongodb.client.model.Updates.push;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -35,10 +35,9 @@ import it.unipi.SmartHome.model.AddReadingRequest;
 import it.unipi.SmartHome.model.AddSensorToBuildingRequest;
 import it.unipi.SmartHome.model.Building;
 import it.unipi.SmartHome.model.User;
+import jakarta.annotation.PreDestroy;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.JedisCluster;
-
-import javax.print.Doc;
 
 @Service
 public class UserService {
@@ -1259,6 +1258,18 @@ public class UserService {
         String redisKey = "statistics:" + buildingId + ":" + yearNumber + ":" + monthNumber + ":mostHumidDay";
         jedis.set(redisKey, value);
 
+    }
+
+    @PreDestroy
+    public void closeConnection() {
+        if (mongoClient != null) {
+            mongoClient.close();
+            System.out.println("MongoDB Connection closed before shutdown.");
+        }
+        if (jedis != null) {
+            jedis.close();
+            System.out.println("Redis connection closed before shutdown.");
+        }
     }
 
 }
