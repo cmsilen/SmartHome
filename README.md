@@ -152,6 +152,7 @@ MongoClientSettings mcs = MongoClientSettings.builder()
 ```
 ### MongoDB sharding
 Si puo' fare uno sharding di Readings usando buildingID come partition key poiché è l'unico modo per distribuire il carico di scritture dovute alle letture dei sensori. Oltretutto, la partition key dovra' essere hashata e per agevolare la scalabilita' orizzontale abbiamo deciso di usare il consistent hashing.
+SensorID sarebbe meglio perché evita che building molto grossi intasino dei server però chiamando getUserSensors si dovrebbe leggere su piu' server per avere una risposta
 
 ### Eviction Policy Redis
 Si setta in questo modo
