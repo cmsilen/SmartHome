@@ -287,10 +287,19 @@ public class UserService {
         // Elimino l'edificio
         collection.deleteOne(Filters.eq("id", id));
 
-        // Invalido il KV DB
+        // Invalido il KV DB dell'admin
         String redisKey = "building:" + username + ":buildings";
         if (jedis.exists(redisKey)) {
             jedis.del(redisKey);
+        }
+
+        // Invalido il KV DB degli altri utenti
+        List<String> users = foundBuilding.getList("users", String.class);
+        for (String user : users) {
+            redisKey = "building:" + user + ":buildings";
+            if (jedis.exists(redisKey)) {
+                jedis.del(redisKey);
+            }
         }
 
         Document deletedBuilding = new Document("id", id);
