@@ -37,6 +37,7 @@ import it.unipi.SmartHome.model.Building;
 import it.unipi.SmartHome.model.User;
 import jakarta.annotation.PreDestroy;
 import redis.clients.jedis.HostAndPort;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisCluster;
 
 @Service
@@ -58,8 +59,11 @@ public class UserService {
     // Connessione a MongoDB
     //ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
 
+    // Connessione al cluster di MongoDB sulle VM
+    ConnectionString uri = new ConnectionString("mongodb://10.1.1.39:27020,10.1.1.40:27020,10.1.1.42:27020");
+
     // Connessione al cluster di MongoDB 
-    ConnectionString uri = new ConnectionString("mongodb://localhost:27018,localhost:27019,localhost:27020");
+    //ConnectionString uri = new ConnectionString("mongodb://localhost:27018,localhost:27019,localhost:27020");
     MongoClientSettings mcs = MongoClientSettings.builder()
         .applyConnectionString(uri)
         .readPreference(ReadPreference.nearest())
@@ -74,8 +78,12 @@ public class UserService {
     String redisHost = "localhost";
     Integer redisPort = 6379;
 
+    // Parametri di connessione al cluster Redis delle VM
+    String[] redisHosts = {"10.1.1.39", "10.1.1.40", "10.1.1.42"};
+    Integer[] redisPorts = {7001, 7001, 7001};
+
     // Connessione a Redis
-    // Jedis jedis = new Jedis(redisHost, redisPort);
+    //Jedis jedis = new Jedis(redisHost, redisPort);
     JedisCluster jedis = connectToJedisCluster();
 
     // Secondo me quetsa roba e' una maialata pero' per ora teniamola cosi'
@@ -93,9 +101,10 @@ public class UserService {
     private JedisCluster connectToJedisCluster() {
 
         Set<HostAndPort> jedisClusterNodes = new HashSet<HostAndPort>();
-        jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7001));
-        jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7002));
-        jedisClusterNodes.add(new HostAndPort("127.0.0.1", 7003));
+
+        for(int i = 0; i < redisHosts.length; i++) {
+            jedisClusterNodes.add(new HostAndPort(redisHosts[i], redisPorts[i]));
+        }
 
         JedisCluster jedis = new JedisCluster(jedisClusterNodes);
         return jedis;
