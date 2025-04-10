@@ -64,6 +64,7 @@ public class UserService {
 
     // Connessione al cluster di MongoDB 
     //ConnectionString uri = new ConnectionString("mongodb://localhost:27018,localhost:27019,localhost:27020");
+
     MongoClientSettings mcs = MongoClientSettings.builder()
         .applyConnectionString(uri)
         .readPreference(ReadPreference.nearest())
@@ -79,8 +80,12 @@ public class UserService {
     Integer redisPort = 6379;
 
     // Parametri di connessione al cluster Redis delle VM
-    String[] redisHosts = {"10.1.1.39", "10.1.1.40", "10.1.1.42"};
-    Integer[] redisPorts = {7001, 7001, 7001};
+    //String[] redisHosts = {"localhost", "localhost", "localhost", "localhost", "localhost", "localhost"};
+    //Integer[] redisPorts = {7000, 7001, 7002, 7003, 7004, 7005};
+
+    // Parametri di connessione al cluster Redis delle VM
+    String[] redisHosts = {"10.1.1.39", "10.1.1.40", "10.1.1.42", "10.1.1.39", "10.1.1.40", "10.1.1.42"};
+    Integer[] redisPorts = {7000, 7000, 7000, 7001, 7001, 7001};
 
     // Connessione a Redis
     //Jedis jedis = new Jedis(redisHost, redisPort);
