@@ -14,7 +14,7 @@ if __name__ == "__main__":
     # Aspetta un minuti e poi invia le letture ciclicamente
     url = "http://localhost:8080/reading"
     while True:
-        time.sleep(10)  
+        time.sleep(60)  
         print("Sending readings...")
         for reading in readings:
             response = requests.post(url, json=reading)

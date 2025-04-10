@@ -287,7 +287,8 @@ public class UserService {
         // Elimino l'edificio
         collection.deleteOne(Filters.eq("id", id));
 
-        // Invalido il KV DB
+        // Invalido il KV DB 
+        // TODO e' sbagliato perche' deve prendere tutti i nomi degli utenti nel building non solo l'admin
         String redisKey = "building:" + username + ":buildings";
         if (jedis.exists(redisKey)) {
             jedis.del(redisKey);
@@ -623,6 +624,8 @@ public class UserService {
             return notFoundSensor.toJson();
         }
         readingsCollection.insertOne(readingDocument);
+
+        // Aggiorna il KV
         jedis.set(redisKey, redisValue.toJson());
 
         return new Document("result", "success").toJson();
@@ -727,6 +730,8 @@ public class UserService {
                 System.out.println(8);
                 currentReading = new Document("error", "Sensor type not supported");
             }
+
+            // Aggiorno il KV DB e aggiungo la lettura alla risposta
             currentSensor.append("lastReading", currentReading);
             jedis.set(jedisKey, currentReading.toJson());
             result.put(currentSensor);
@@ -756,6 +761,7 @@ public class UserService {
     public Document getRainyDays(int buildingId, int yearNumber, int monthNumber) {
         MongoCollection<Document> readingsCollection = database.getCollection(readingsCollectionName);
 
+        // Calcolo i timestamp di inizio e fine mese
         Date startTimestamp;
         Date endTimestamp;
         String monthStart = monthNumber < 10 ? "0" + monthNumber : "" + monthNumber;
@@ -776,40 +782,46 @@ public class UserService {
             throw new RuntimeException(e);
         }
 
+        // Filtro sulla base del timestamp e sul tipo di sensore (di pioggia)
         Document stage1 = new Document();
         stage1.append("timestamp", new Document("$gte", startTimestamp).append("$lt", endTimestamp));
         stage1.append("buildingID", buildingId);
         stage1.append("precipitationIntensity", new Document("$exists", true));
 
+        // Proiezione del timestamp in formato data e del valore di pioggia
         Document stage2 = new Document();
         stage2.append("precipitationIntensity", 1);
         stage2.append("date", new Document("$dateToString", new Document("format", "%d-%m-%Y").append("date", "$timestamp")));
 
+        // Gruppo per data e somma dei valori di pioggia
         Document stage3 = new Document();
         stage3.append("_id", "$date");
         stage3.append("sumPrecipitation", new Document("$sum", "$precipitationIntensity"));
         stage3 = new Document("$group", stage3);
 
+        // Filtro per i giorni in cui la somma della pioggia e' maggiore di 0
         Document stage4 = new Document("sumPrecipitation", new Document("$gt", 0));
 
+        // Gruppo per contare i giorni di pioggia
         Document stage5 = new Document();
         stage5.append("_id", "");
         stage5.append("count", new Document("$sum", 1));
         stage5 = new Document("$group", stage5);
 
+        // Esegui l'aggregazione
         AggregateIterable<Document> result = readingsCollection.aggregate(
-                Arrays.asList(
-                        Aggregates.match(stage1),
-                        Aggregates.project(stage2),
-                        stage3,
-                        Aggregates.match(stage4),
-                        stage5
-                )
+            Arrays.asList(
+                Aggregates.match(stage1),
+                Aggregates.project(stage2),
+                stage3,
+                Aggregates.match(stage4),
+                stage5
+            )
         );
 
+        // Se il risultato e' vuoto ritorna 0 altrimenti ritorna il numero di giorni di pioggia
         if(result.first() != null)
             return result.first();
-
         Document ret = new Document();
         ret.append("_id", "");
         ret.append("count", 0);
