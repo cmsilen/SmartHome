@@ -43,12 +43,6 @@ import redis.clients.jedis.JedisCluster;
 @Service
 public class UserService {
 
-    // NOTA si potrebbero usare delle utility function tipo utenteEsiste(username) oppure edificioEsiste(id)
-    // TODO aggiungere KV in GET /sensors
-    // TODO aggiornare KV in POST /reading 
-    // NICE TO HAVE: fare delle funzioni di utility per evitare codice copy paste nelle query (ma anche sti cazzi)
-
-
     // Parametri di connessione a MongoDB
     String usersCollectionName = "Users";
     String buildingsCollection = "Buildings";
@@ -56,15 +50,9 @@ public class UserService {
     String readingsCollectionName = "Readings";
     String dbName = "SmartHome";
 
-    // Connessione a MongoDB
-    //ConnectionString uri = new ConnectionString("mongodb://localhost:27017");
 
     // Connessione al cluster di MongoDB sulle VM
     ConnectionString uri = new ConnectionString("mongodb://10.1.1.39:27020,10.1.1.40:27020,10.1.1.42:27020");
-
-    // Connessione al cluster di MongoDB 
-    //ConnectionString uri = new ConnectionString("mongodb://localhost:27018,localhost:27019,localhost:27020");
-
     MongoClientSettings mcs = MongoClientSettings.builder()
         .applyConnectionString(uri)
         .readPreference(ReadPreference.nearest())
@@ -72,7 +60,7 @@ public class UserService {
         .writeConcern(WriteConcern.ACKNOWLEDGED)
         .build();
     
-    MongoClient mongoClient = MongoClients.create(uri);
+    MongoClient mongoClient = MongoClients.create(mcs);
     MongoDatabase database = mongoClient.getDatabase(dbName);
 
     // Parametri di connessione a Redis
@@ -80,18 +68,11 @@ public class UserService {
     Integer redisPort = 6379;
 
     // Parametri di connessione al cluster Redis delle VM
-    //String[] redisHosts = {"localhost", "localhost", "localhost", "localhost", "localhost", "localhost"};
-    //Integer[] redisPorts = {7000, 7001, 7002, 7003, 7004, 7005};
-
-    // Parametri di connessione al cluster Redis delle VM
     String[] redisHosts = {"10.1.1.39", "10.1.1.40", "10.1.1.42", "10.1.1.39", "10.1.1.40", "10.1.1.42"};
     Integer[] redisPorts = {7000, 7000, 7000, 7001, 7001, 7001};
 
     // Connessione a Redis
-    //Jedis jedis = new Jedis(redisHost, redisPort);
     JedisCluster jedis = connectToJedisCluster();
-
-    // Secondo me quetsa roba e' una maialata pero' per ora teniamola cosi'
 
     // FUNZIONI DI UTILITY
     private boolean isUserValid(User user) {
@@ -100,7 +81,6 @@ public class UserService {
     }
     private boolean isBuildingValid(Building building) {
         return building.getName() != null && !building.getName().isEmpty() && building.getAdmin() != null;
-        // ho tolto building.getAdmin().isEmpty()
     }
 
     private JedisCluster connectToJedisCluster() {
